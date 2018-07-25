@@ -34,6 +34,7 @@ import org.eclipse.jetty.util.StringUtil;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 
 
 public class DisplayCurrencyActivity extends BRActivity {
@@ -78,7 +79,8 @@ public class DisplayCurrencyActivity extends BRActivity {
         exchangeText = findViewById(R.id.exchange_text);
         listView = findViewById(R.id.currency_list_view);
         adapter = new CurrencyListAdapter(this);
-        adapter.addAll(CurrencyDataSource.getInstance(this).getAllCurrencies(this, WalletsMaster.getInstance(this).getCurrentWallet(this).getIso(this)));
+        List<CurrencyEntity> currencies = CurrencyDataSource.getInstance(this).getAllCurrencies(this, WalletsMaster.getInstance(this).getCurrentWallet(this).getIso(this));
+        adapter.addAll(currencies);
         leftButton = findViewById(R.id.left_button);
         rightButton = findViewById(R.id.right_button);
         leftButton.setOnClickListener(new View.OnClickListener() {

@@ -116,10 +116,12 @@ public class BRApiManager {
                         tmp.name = tmpObj.getString("name");
                         tmp.code = tmpObj.getString("code");
                         tmp.rate = (float) tmpObj.getDouble("rate");
-                        String selectedISO = walletManager.getIso(context);
-                        if (tmp.code.equalsIgnoreCase(selectedISO)) {
-                            BRSharedPrefs.putPreferredFiatIso(context, tmp.code);
-                        }
+                        tmp.iso = walletManager.getIso(context);
+
+                        //String selectedISO = walletManager.getIso(context);
+                        //if (tmp.code.equalsIgnoreCase(selectedISO)) {
+                        //    BRSharedPrefs.putPreferredFiatIso(context, tmp.code);
+                        //}
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -183,44 +185,80 @@ public class BRApiManager {
     public static JSONArray fetchRates(Activity activity, BaseWalletManager walletManager) {
         StringBuilder ruse = new StringBuilder();
         String code = walletManager.getIso(activity);
-        String selectedISO = BRSharedPrefs.getPreferredFiatIso(activity);
 
-        if ("STAK".equals(code)) {
-            ruse.append("{\"data\":[{\"code\":\"STAK\",\"name\":\"STRAKS\",\"rate\":1},");
-        } else {
-            ruse.append("{\"data\":[{\"code\":\"BCH\",\"name\":\"Bitcoin Cash\",\"rate\":1},");
+        ruse.append("{\"data\":[{\"code\":\"STAK\",\"name\":\"STRAKS\",\"rate\":1},");
+
+        String myURL = "https://api.straks.info/v2/price/";
+
+        String tempJsonString = urlGET(activity, myURL);
+        JSONArray jsonArray = null;
+
+        if (tempJsonString == null) {
+            Log.e(TAG, "fetchRates: failed, api.straks.info response is null");
+            return null;
+        }
+        try {
+            jsonArray = new JSONArray(tempJsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        for (int i = 0; codes.length == names.length && i < codes.length; i++) {
-            if( codes[i].equals(selectedISO)) {
-                ruse.append("{\"code\":\"").append(codes[i]).append("\",\"name\":\"")
-                        .append(names[i]).append("\",\"rate\":");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject ccyEntry = jsonArray.getJSONObject(i);
 
-                String myURL = "https://api.straks.info/v2/price/" + codes[i];
-
-                //if ("BCH".equals(code)) {
-                //    myURL = "https://api.coinmarketcap.com/v1/ticker/bitcoin-cash/?convert=" + codes[i];
-                //}
-
-                String tempJsonString = urlGET(activity, myURL);
-                if (tempJsonString == null) return null;
-                try {
-                    JSONArray tempJsonArray = new JSONArray(tempJsonString);
-                    JSONObject tempJsonObject = tempJsonArray.getJSONObject(0);
-
-                    String rate = tempJsonObject.getString("rate");
-
-                    ruse.append(Double.parseDouble(rate));
-                    if (codes[i].equals(selectedISO))
-                        ruse.append("}]}");
-                    else
-                        ruse.append("},");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                ruse.append("{\"code\":\"").append(ccyEntry.getString("code"))
+                        .append("\",\"name\":\"").append(ccyEntry.getString("name"))
+                        .append("\",\"rate\":").append(Double.parseDouble(ccyEntry.getString("rate")));
+                ruse.append("},");
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
             }
         }
 
+        ruse.append("]}");
+        String jsonString = ruse.toString();
+
+        if (jsonString == null) return null;
+        try {
+            JSONObject obj = new JSONObject(jsonString);
+
+            jsonArray = obj.getJSONArray("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonArray == null ? backupFetchRates(activity, walletManager) : jsonArray;
+    }
+
+    public static JSONArray backupFetchRates(Activity app, BaseWalletManager walletManager) {
+        StringBuilder ruse = new StringBuilder();
+        String code = walletManager.getIso(app);
+
+        ruse.append("{\"data\":[{\"code\":\"STAK\",\"name\":\"STRAKS\",\"rate\":1},");
+
+        for (int i = 0; codes.length == names.length && i < codes.length; i++) {
+            ruse.append("{\"code\":\"").append(codes[i]).append("\",\"name\":\"")
+                    .append(names[i]).append("\",\"rate\":");
+
+            String myURL = "https://api.coinmarketcap.com/v1/ticker/straks/?convert=" + codes[i];
+
+            String tempJsonString = urlGET(app, myURL);
+            if (tempJsonString == null) return null;
+            try {
+                JSONArray tempJsonArray = new JSONArray(tempJsonString);
+                JSONObject tempJsonObject = tempJsonArray.getJSONObject(0);
+
+                String rate = tempJsonObject.getString("price_" + codes[i].toLowerCase());
+                ruse.append(Double.parseDouble(rate));
+                ruse.append("},");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ruse.append("]}");
         String jsonString = ruse.toString();
 
         JSONArray jsonArray = null;
@@ -232,25 +270,7 @@ public class BRApiManager {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return jsonArray;
-    }
 
-    public static JSONArray backupFetchRates(Activity app, BaseWalletManager walletManager) {
-        if (!walletManager.getIso(app).equalsIgnoreCase(WalletBitcoinManager.getInstance(app).getIso(app))) {
-            //todo add backup for BCH
-            return null;
-        }
-        String jsonString = urlGET(app, "https://bitpay.com/rates");
-
-        JSONArray jsonArray = null;
-        if (jsonString == null) return null;
-        try {
-            JSONObject obj = new JSONObject(jsonString);
-
-            jsonArray = obj.getJSONArray("data");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         return jsonArray;
     }
 

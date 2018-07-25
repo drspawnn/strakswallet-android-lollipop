@@ -9,10 +9,9 @@ android {
         applicationId = 'com.strakswallet'
         minSdkVersion 23
         targetSdkVersion 26
-        versionCode 201
-        versionName "201"
+        versionCode 202
+        versionName "202"
         multiDexEnabled true
-
         // Similar to other properties in the defaultConfig block,
         // you can configure the ndk block for each product flavor
         // in your build configuration.
@@ -88,6 +87,22 @@ android {
 
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def project = "STRAKSwallet"
+            def SEP = "-"
+            def flavor = variant.productFlavors[0].name
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+            def date = new Date();
+            def formattedDate = date.format('yyyyMMdd')
+
+            def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
+
+            outputFileName = new File(newApkName)
+        }
+    }
+
     lintOptions {
         // set to true to turn off analysis progress reporting by lint
         quiet false
@@ -104,8 +119,6 @@ android {
     }
 
     buildTypes {
-//        gitUpdateModules()
-//        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         release {
             minifyEnabled = false
             debuggable = false
