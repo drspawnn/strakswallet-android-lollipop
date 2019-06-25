@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.strakswallet.R;
+import com.strakswallet.presenter.activities.WalletActivity;
+import com.strakswallet.presenter.activities.intro.IntroActivity;
 import com.strakswallet.tools.exceptions.BRKeystoreErrorException;
 import com.strakswallet.presenter.customviews.BRDialogView;
 import com.strakswallet.tools.animation.BRAnimator;
@@ -421,6 +423,8 @@ public class BRKeyStore {
             public void onDismiss(DialogInterface dialog) {
                 WalletsMaster.getInstance(app).wipeWalletButKeystore(app);
                 WalletsMaster.getInstance(app).wipeKeyStore(app);
+                //Check and show to user "Lock Screen" dialog
+                WalletsMaster.getInstance(app).startTheWalletIfExists(IntroActivity.getApp());
                 dialog.dismiss();
             }
         }, 0);

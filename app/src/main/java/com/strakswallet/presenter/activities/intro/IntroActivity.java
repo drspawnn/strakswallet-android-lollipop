@@ -127,6 +127,17 @@ public class IntroActivity extends BRActivity implements Serializable {
 
     }
 
+    // Results from SecuritySettingsActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case 1:
+                // Check canary again
+                PostAuth.getInstance().onCanaryCheck(this, false);
+                break;
+        }
+    }
+
     private void updateBundles() {
         BRExecutor.getInstance().forBackgroundTasks().execute(new Runnable() {
             @Override
