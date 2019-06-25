@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.util.Log;
 
@@ -288,17 +290,20 @@ public class WalletsMaster {
         if (!m.isPasscodeEnabled(app)) {
             //Device passcode/password should be enabled for the app to work
             BRDialog.showCustomDialog(app, app.getString(R.string.JailbreakWarnings_title), app.getString(R.string.Prompts_NoScreenLock_body_android),
-                    app.getString(R.string.AccessibilityLabels_close), null, new BRDialogView.BROnClickListener() {
+                    app.getString(R.string.Button_settings), app.getString(R.string.AccessibilityLabels_close), new BRDialogView.BROnClickListener() {
+                        @Override
+                        public void onClick(BRDialogView brDialogView) {
+                            //Start security settings for user
+                            Intent intent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
+                            app.startActivityForResult(intent,1);
+                            brDialogView.dismiss();
+                        }
+                    }, new BRDialogView.BROnClickListener() {
                         @Override
                         public void onClick(BRDialogView brDialogView) {
                             app.finish();
                         }
-                    }, null, new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            app.finish();
-                        }
-                    }, 0);
+                    }, null, 0, false);
         } else {
             if (!m.noWallet(app)) {
                 BRAnimator.startBreadActivity(app, true);
