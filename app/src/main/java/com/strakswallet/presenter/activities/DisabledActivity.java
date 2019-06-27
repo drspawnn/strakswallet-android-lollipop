@@ -126,8 +126,8 @@ public class DisabledActivity extends BRActivity {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
         } else if (AuthManager.getInstance().isWalletDisabled(DisabledActivity.this)) {
             SpringAnimator.failShakeAnimation(DisabledActivity.this, disabled);
         } else {

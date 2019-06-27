@@ -1,6 +1,7 @@
 
 package com.strakswallet.presenter.activities.intro;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +17,9 @@ import com.strakswallet.core.BRCoreMasterPubKey;
 import com.strakswallet.presenter.activities.HomeActivity;
 import com.strakswallet.presenter.activities.SetPinActivity;
 import com.strakswallet.presenter.activities.util.BRActivity;
+import com.strakswallet.presenter.customviews.BRDialogView;
 import com.strakswallet.tools.animation.BRAnimator;
+import com.strakswallet.tools.animation.BRDialog;
 import com.strakswallet.tools.manager.BRReportsManager;
 import com.strakswallet.tools.security.BRKeyStore;
 import com.strakswallet.tools.security.PostAuth;
@@ -79,51 +82,73 @@ public class IntroActivity extends BRActivity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-        newWalletButton = (Button) findViewById(R.id.button_new_wallet);
-        recoverWalletButton = (Button) findViewById(R.id.button_recover_wallet);
-        splashScreen = findViewById(R.id.splash_screen);
-        setListeners();
-        updateBundles();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    BRDialog.showCustomDialog(app, app.getString(R.string.JailbreakWarnings_title), "This wallet version is for Android Lollipop users. Please install and use official wallet. Official wallet is more than safe this wallet.",
+                            app.getString(R.string.AccessibilityLabels_close), null, new BRDialogView.BROnClickListener() {
+                                @Override
+                                public void onClick(BRDialogView brDialogView) {
+                                    app.finish();
+                                }
+                            }, null, new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    app.finish();
+                                }
+                            }, 0);
+                }
+            });
+
+        }
+        else{
+            newWalletButton = (Button) findViewById(R.id.button_new_wallet);
+            recoverWalletButton = (Button) findViewById(R.id.button_recover_wallet);
+            splashScreen = findViewById(R.id.splash_screen);
+            setListeners();
+            updateBundles();
 //        SyncManager.getInstance().updateAlarms(this);
-        faq = (ImageButton) findViewById(R.id.faq_button);
+            faq = (ImageButton) findViewById(R.id.faq_button);
 
-        faq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!BRAnimator.isClickAllowed()) return;
-                BRAnimator.showSupportFragment(app, BRConstants.startView);
+            faq.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!BRAnimator.isClickAllowed()) return;
+                    BRAnimator.showSupportFragment(app, BRConstants.startView);
+                }
+            });
+
+
+            if (!BuildConfig.DEBUG && BRKeyStore.AUTH_DURATION_SEC != 300) {
+                Log.e(TAG, "onCreate: BRKeyStore.AUTH_DURATION_SEC != 300");
+                BRReportsManager.reportBug(new RuntimeException("AUTH_DURATION_SEC should be 300"), true);
             }
-        });
+            introActivity = this;
 
+            getWindowManager().getDefaultDisplay().getSize(screenParametersPoint);
 
-        if (!BuildConfig.DEBUG && BRKeyStore.AUTH_DURATION_SEC != 300) {
-            Log.e(TAG, "onCreate: BRKeyStore.AUTH_DURATION_SEC != 300");
-            BRReportsManager.reportBug(new RuntimeException("AUTH_DURATION_SEC should be 300"), true);
-        }
-        introActivity = this;
+            if (Utils.isEmulatorOrDebug(this))
+                Utils.printPhoneSpecs();
 
-        getWindowManager().getDefaultDisplay().getSize(screenParametersPoint);
+            byte[] masterPubKey = BRKeyStore.getMasterPublicKey(this);
 
-        if (Utils.isEmulatorOrDebug(this))
-            Utils.printPhoneSpecs();
-
-        byte[] masterPubKey = BRKeyStore.getMasterPublicKey(this);
-
-        boolean isFirstAddressCorrect = false;
-        if (masterPubKey != null && masterPubKey.length != 0) {
-            isFirstAddressCorrect = SmartValidator.checkFirstAddress(this, masterPubKey);
-        }
-        if (!isFirstAddressCorrect) {
-            WalletsMaster.getInstance(this).wipeWalletButKeystore(this);
-        }
-
-        PostAuth.getInstance().onCanaryCheck(this, false);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                splashScreen.setVisibility(View.GONE);
+            boolean isFirstAddressCorrect = false;
+            if (masterPubKey != null && masterPubKey.length != 0) {
+                isFirstAddressCorrect = SmartValidator.checkFirstAddress(this, masterPubKey);
             }
-        }, 1000);
+            if (!isFirstAddressCorrect) {
+                WalletsMaster.getInstance(this).wipeWalletButKeystore(this);
+            }
+
+            PostAuth.getInstance().onCanaryCheck(this, false);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    splashScreen.setVisibility(View.GONE);
+                }
+            }, 1000);
+        }
 
     }
 
@@ -196,7 +221,7 @@ public class IntroActivity extends BRActivity implements Serializable {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
+        super.onSaveInstanceState(outState);
     }
 
     @Override

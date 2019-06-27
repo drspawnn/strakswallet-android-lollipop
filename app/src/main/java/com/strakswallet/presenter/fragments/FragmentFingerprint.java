@@ -18,13 +18,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
-import android.hardware.fingerprint.FingerprintManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class FragmentFingerprint extends Fragment
         implements FingerprintUiHelper.Callback {
     public static final String TAG = FragmentFingerprint.class.getName();
 
-    private FingerprintManager.CryptoObject mCryptoObject;
+    private FingerprintManagerCompat.CryptoObject mCryptoObject;
     private FingerprintUiHelper mFingerprintUiHelper;
     private BRAuthCompletion completion;
     private TextView title;
@@ -101,7 +102,7 @@ public class FragmentFingerprint extends Fragment
             customMessage = messageString;
             message.setText(customMessage);
         }
-        FingerprintManager mFingerprintManager = (FingerprintManager) getActivity().getSystemService(Activity.FINGERPRINT_SERVICE);
+        FingerprintManagerCompat mFingerprintManager = FingerprintManagerCompat.from(getActivity());//(FingerprintManagerCompat) getActivity().getSystemService(Activity.FINGERPRINT_SERVICE);
         mFingerprintUiHelperBuilder = new FingerprintUiHelper.FingerprintUiHelperBuilder(mFingerprintManager);
         mFingerprintUiHelper = mFingerprintUiHelperBuilder.build((ImageView) v.findViewById(R.id.fingerprint_icon),
                 (TextView) v.findViewById(R.id.fingerprint_status), this, getContext());
@@ -195,7 +196,7 @@ public class FragmentFingerprint extends Fragment
 
     @Override
     public void onAuthenticated() {
-        final Activity app = getActivity();
+        final AppCompatActivity app = (AppCompatActivity)getActivity();
         authSucceeded = true;
 
         if (completion != null) completion.onComplete();
@@ -251,7 +252,7 @@ public class FragmentFingerprint extends Fragment
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     if (getActivity() != null)
-                        getActivity().getFragmentManager().beginTransaction().remove(FragmentFingerprint.this).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(FragmentFingerprint.this).commit();
                 }
             });
 

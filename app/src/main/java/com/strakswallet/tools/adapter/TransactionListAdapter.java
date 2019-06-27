@@ -1,8 +1,9 @@
 package com.strakswallet.tools.adapter;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -128,7 +129,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // inflate the layout
-        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+        LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
         return new TxHolder(inflater.inflate(txResId, parent, false));
     }
 
@@ -171,9 +172,9 @@ public class TransactionListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         boolean received = item.getSent() == 0;
 
         if (received)
-            convertView.transactionAmount.setTextColor(mContext.getResources().getColor(R.color.transaction_amount_received_color, null));
+            convertView.transactionAmount.setTextColor(ContextCompat.getColor(mContext,R.color.transaction_amount_received_color));
         else
-            convertView.transactionAmount.setTextColor(mContext.getResources().getColor(R.color.total_assets_usd_color, null));
+            convertView.transactionAmount.setTextColor(ContextCompat.getColor(mContext,R.color.total_assets_usd_color));
 
 
         // If this transaction failed, show the "FAILED" indicator in the cell

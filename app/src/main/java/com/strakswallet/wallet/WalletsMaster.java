@@ -1,6 +1,5 @@
 package com.strakswallet.wallet;
 
-import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +8,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.security.keystore.UserNotAuthenticatedException;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.strakswallet.R;
@@ -135,14 +136,14 @@ public class WalletsMaster {
         boolean success = false;
         try {
             success = BRKeyStore.putPhrase(paperKeyBytes, ctx, BRConstants.PUT_PHRASE_NEW_WALLET_REQUEST_CODE);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             return false;
         }
         if (!success) return false;
         byte[] phrase;
         try {
             phrase = BRKeyStore.getPhrase(ctx, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             throw new RuntimeException("Failed to retrieve the phrase even though at this point the system auth was asked for sure.");
         }
         if (Utils.isNullOrEmpty(phrase)) throw new NullPointerException("phrase is null!!");
@@ -199,7 +200,7 @@ public class WalletsMaster {
                 if (phrase == null || phrase.length == 0) {
                     return true;
                 }
-            } catch (UserNotAuthenticatedException e) {
+            } catch (Exception e){//UserNotAuthenticatedException e) {
                 return false;
             }
 
@@ -216,7 +217,7 @@ public class WalletsMaster {
      * true if device passcode is enabled
      */
     public boolean isPasscodeEnabled(Context ctx) {
-        KeyguardManager keyguardManager = (KeyguardManager) ctx.getSystemService(Activity.KEYGUARD_SERVICE);
+        KeyguardManager keyguardManager = (KeyguardManager) ctx.getSystemService(AppCompatActivity.KEYGUARD_SERVICE);
         return keyguardManager.isKeyguardSecure();
     }
 
@@ -285,7 +286,7 @@ public class WalletsMaster {
 
     }
 
-    public void startTheWalletIfExists(final Activity app) {
+    public void startTheWalletIfExists(final AppCompatActivity app) {
         final WalletsMaster m = WalletsMaster.getInstance(app);
         if (!m.isPasscodeEnabled(app)) {
             //Device passcode/password should be enabled for the app to work
@@ -306,7 +307,7 @@ public class WalletsMaster {
                     }, null, 0, false);
         } else {
             if (!m.noWallet(app)) {
-                BRAnimator.startBreadActivity(app, true);
+                BRAnimator.startBreadActivity((FragmentActivity)app, true);
             }
             //else just sit in the intro screen
 

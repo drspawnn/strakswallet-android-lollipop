@@ -1,23 +1,26 @@
 package com.strakswallet.tools.util;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.hardware.fingerprint.FingerprintManager;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.strakswallet.BreadApp;
+import com.strakswallet.presenter.activities.HomeActivity;
+import com.strakswallet.presenter.activities.WalletActivity;
 import com.strakswallet.presenter.activities.intro.IntroActivity;
 
 import java.math.BigDecimal;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.FINGERPRINT_SERVICE;
+import static android.support.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 
 
 /**
@@ -57,7 +61,7 @@ import static android.content.Context.FINGERPRINT_SERVICE;
 public class Utils {
     public static final String TAG = Utils.class.getName();
 
-    public static boolean isUsingCustomInputMethod(Activity context) {
+    public static boolean isUsingCustomInputMethod(AppCompatActivity context) {
         if (context == null) return false;
         InputMethodManager imm = (InputMethodManager) context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -163,17 +167,19 @@ public class Utils {
     }
 
     public static boolean isFingerprintEnrolled(Context app) {
-        FingerprintManager fingerprintManager = (FingerprintManager) app.getSystemService(FINGERPRINT_SERVICE);
+        FingerprintManagerCompat fingerprintManager = FingerprintManagerCompat.from(app.getApplicationContext());//(FingerprintManagerCompat) app.getSystemService(FINGERPRINT_SERVICE);
         // Device doesn't support fingerprint authentication
         return ActivityCompat.checkSelfPermission(app, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED && fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints();
     }
 
     public static boolean isFingerprintAvailable(Context app) {
-        FingerprintManager fingerprintManager = (FingerprintManager) app.getSystemService(FINGERPRINT_SERVICE);
+        FingerprintManagerCompat fingerprintManager = FingerprintManagerCompat.from(app.getApplicationContext());//(FingerprintManagerCompat) app.getSystemService(FINGERPRINT_SERVICE);
         if (fingerprintManager == null) return false;
         // Device doesn't support fingerprint authentication
         if (ActivityCompat.checkSelfPermission(app, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(app, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+            try {
+                Toast.makeText(app.getApplicationContext(), "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+            }catch (RuntimeException rune){return false;}
             return false;
         }
         return fingerprintManager.isHardwareDetected();
@@ -181,7 +187,7 @@ public class Utils {
 
     public static void hideKeyboard(Context app) {
         if (app != null) {
-            View view = ((Activity) app).getCurrentFocus();
+            View view = ((AppCompatActivity) app).getCurrentFocus();
             if (view != null) {
                 InputMethodManager imm = (InputMethodManager) app.getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null)

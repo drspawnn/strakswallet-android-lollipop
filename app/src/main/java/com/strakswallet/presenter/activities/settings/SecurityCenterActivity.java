@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,6 +48,7 @@ public class SecurityCenterActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class SecurityCenterActivity extends BRActivity {
 //            Log.e(TAG, "getView: pos: " + position + ", item: " + items.get(position));
             if (convertView == null) {
                 // inflate the layout
-                LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+                LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
                 convertView = inflater.inflate(defaultLayoutResource, parent, false);
             }
             TextView title = (TextView) convertView.findViewById(R.id.item_title);

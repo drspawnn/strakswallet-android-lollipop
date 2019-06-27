@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.transition.TransitionManager;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -127,12 +128,12 @@ public class PaperKeyProveActivity extends BRActivity {
                 } else {
 
                     if (!isWordCorrect(true)) {
-                        wordEditFirst.setTextColor(getColor(R.color.red_text));
+                        wordEditFirst.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.red_text));
                         SpringAnimator.failShakeAnimation(PaperKeyProveActivity.this, wordEditFirst);
                     }
 
                     if (!isWordCorrect(false)) {
-                        wordEditSecond.setTextColor(getColor(R.color.red_text));
+                        wordEditSecond.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.red_text));
                         SpringAnimator.failShakeAnimation(PaperKeyProveActivity.this, wordEditSecond);
                     }
                 }
@@ -213,6 +214,7 @@ public class PaperKeyProveActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 //    private class FocusListener implements View.OnFocusChangeListener {
@@ -230,7 +232,7 @@ public class PaperKeyProveActivity extends BRActivity {
     private void validateWord(EditText view) {
         String word = view.getText().toString();
         boolean valid = SmartValidator.isWordValid(this, word);
-        view.setTextColor(getColor(valid ? R.color.light_gray : R.color.red_text));
+        view.setTextColor(ContextCompat.getColor(getBaseContext(),valid ? R.color.light_gray : R.color.red_text));
 //        if (!valid)
 //            SpringAnimator.failShakeAnimation(this, view);
         if (isWordCorrect(true)) {

@@ -1,8 +1,9 @@
 package com.strakswallet.wallet.wallets.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.strakswallet.BuildConfig;
@@ -224,7 +225,7 @@ public class CryptoUriParser {
 
             switch (host) {
                 case "scanqr":
-                    BRAnimator.openScanner((Activity) app, BRConstants.SCANNER_REQUEST);
+                    BRAnimator.openScanner((FragmentActivity) app, BRConstants.SCANNER_REQUEST);
                     break;
                 case "addressList":
                     //todo implement
@@ -257,9 +258,9 @@ public class CryptoUriParser {
     }
 
     private static boolean tryCryptoUrl(final CryptoRequest requestObject, final Context ctx) {
-        final Activity app;
-        if (ctx instanceof Activity) {
-            app = (Activity) ctx;
+        final FragmentActivity app;
+        if (ctx instanceof AppCompatActivity) {
+            app = (FragmentActivity) ctx;
         } else {
             Log.e(TAG, "tryCryptoUrl: " + "app isn't activity: " + ctx.getClass().getSimpleName());
             BRReportsManager.reportBug(new NullPointerException("app isn't activity: " + ctx.getClass().getSimpleName()));
@@ -284,11 +285,11 @@ public class CryptoUriParser {
             app.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    BRAnimator.showSendFragment(app, requestObject);
+                    BRAnimator.showSendFragment((AppCompatActivity)app, requestObject);
                 }
             });
         } else {
-            BRAnimator.killAllFragments(app);
+            BRAnimator.killAllFragments((AppCompatActivity)app);
             if (Utils.isNullOrEmpty(requestObject.address) || !new BRCoreAddress(requestObject.address).isValid()) {
                 BRDialog.showSimpleDialog(app, app.getString(R.string.Send_invalidAddressTitle), "");
                 return true;

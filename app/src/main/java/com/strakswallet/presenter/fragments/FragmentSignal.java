@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -104,7 +104,7 @@ public class FragmentSignal extends Fragment {
             public void run() {
                 try {
                     if (getActivity() != null)
-                        getActivity().getFragmentManager().popBackStack();
+                        getActivity().getSupportFragmentManager().popBackStack();
                 } catch (Exception ignored){
 
                 }

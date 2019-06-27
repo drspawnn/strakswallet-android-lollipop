@@ -1,7 +1,7 @@
 package com.strakswallet.presenter.activities;
 
 import android.animation.LayoutTransition;
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.transition.TransitionManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -160,7 +161,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
             }
         });
 
-        mSendButton.setHasShadow(false);
+        mReceiveButton.setHasShadow(false);
         mReceiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -257,13 +258,13 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
         if (wallet.getUiConfiguration().buyVisible) {
             mBuyButton.setHasShadow(false);
-            mBuyButton.setVisibility(View.VISIBLE);
+            mBuyButton.setVisibility(View.GONE);
             mBuyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(WalletActivity.this, WebViewActivity.class);
                     intent.putExtra("url", HTTPServer.URL_BUY);
-                    Activity app = WalletActivity.this;
+                    AppCompatActivity app = WalletActivity.this;
                     app.startActivity(intent);
                     app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
                 }
@@ -287,8 +288,6 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
             mSendButton.setLayoutParams(param);
             mReceiveButton.setLayoutParams(param2);
-            mBuyButton.setVisibility(View.GONE);
-
         }
 
 
@@ -486,13 +485,13 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
 
         if (!cryptoPreferred) {
-            mBalanceSecondary.setTextColor(getResources().getColor(R.color.currency_subheading_color, null));
-            mBalancePrimary.setTextColor(getResources().getColor(R.color.white, null));
+            mBalanceSecondary.setTextColor(ContextCompat.getColor(this,R.color.currency_subheading_color));
+            mBalancePrimary.setTextColor(ContextCompat.getColor(this,R.color.white));
             mBalanceSecondary.setTypeface(FontManager.get(this, "CircularPro-Book.otf"));
 
         } else {
-            mBalanceSecondary.setTextColor(getResources().getColor(R.color.white, null));
-            mBalancePrimary.setTextColor(getResources().getColor(R.color.currency_subheading_color, null));
+            mBalanceSecondary.setTextColor(ContextCompat.getColor(this,R.color.white));
+            mBalancePrimary.setTextColor(ContextCompat.getColor(this,R.color.currency_subheading_color));
             mBalanceSecondary.setTypeface(FontManager.get(this, "CircularPro-Bold.otf"));
 
         }
@@ -626,7 +625,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
     @Override
     public void onBackPressed() {
-        int c = getFragmentManager().getBackStackEntryCount();
+        int c = getSupportFragmentManager().getBackStackEntryCount();
         if (c > 0) {
             super.onBackPressed();
             return;
@@ -660,9 +659,9 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
             mProgressBar.invalidate();
             return false;
         }
+        mBalanceLabel.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressLabel.setVisibility(View.VISIBLE);
-        mBalanceLabel.setVisibility(View.GONE);
         mProgressBar.invalidate();
         return true;
     }

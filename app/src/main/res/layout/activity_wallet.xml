@@ -127,6 +127,7 @@
                         android:layout_marginEnd="15dp"
                         android:keepScreenOn="true"
                         android:indeterminate="false"
+                        android:visibility="gone"
                         android:max="100"
                         android:progress="0"
                         android:progressBackgroundTint="#88ffffff"

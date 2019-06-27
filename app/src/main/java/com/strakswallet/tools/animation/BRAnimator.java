@@ -7,16 +7,18 @@ import android.animation.ArgbEvaluator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +81,7 @@ public class BRAnimator {
     public static float t2Size;
     public static boolean supportIsShowing;
 
-    public static void showBreadSignal(Activity activity, String title, String iconDescription, int drawableId, BROnSignalCompletion completion) {
+    public static void showBreadSignal(AppCompatActivity activity, String title, String iconDescription, int drawableId, BROnSignalCompletion completion) {
         fragmentSignal = new FragmentSignal();
         Bundle bundle = new Bundle();
         bundle.putString(FragmentSignal.TITLE, title);
@@ -87,7 +89,7 @@ public class BRAnimator {
         fragmentSignal.setCompletion(completion);
         bundle.putInt(FragmentSignal.RES_ID, drawableId);
         fragmentSignal.setArguments(bundle);
-        FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.animator.from_bottom, R.animator.to_bottom, R.animator.from_bottom, R.animator.to_bottom);
         transaction.add(android.R.id.content, fragmentSignal, fragmentSignal.getClass().getName());
         transaction.addToBackStack(null);
@@ -95,7 +97,7 @@ public class BRAnimator {
             transaction.commit();
     }
 
-    public static void init(Activity app) {
+    public static void init(AppCompatActivity app) {
         if (app == null) return;
 //        t1Size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 30, app.getResources().getDisplayMetrics());
 //        t2Size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, app.getResources().getDisplayMetrics());
@@ -103,7 +105,7 @@ public class BRAnimator {
         t2Size = 16;
     }
 
-    public static void showFragmentByTag(Activity app, String tag) {
+    public static void showFragmentByTag(AppCompatActivity app, String tag) {
         Log.e(TAG, "showFragmentByTag: " + tag);
         if (tag == null) return;
         //catch animation duration, make it 0 for no animation, then restore it.
@@ -132,12 +134,12 @@ public class BRAnimator {
         }
     }
 
-    public static void showSendFragment(Activity app, final CryptoRequest request) {
+    public static void showSendFragment(AppCompatActivity app, final CryptoRequest request) {
         if (app == null) {
             Log.e(TAG, "showSendFragment: app is null");
             return;
         }
-        FragmentSend fragmentSend = (FragmentSend) app.getFragmentManager().findFragmentByTag(FragmentSend.class.getName());
+        FragmentSend fragmentSend = (FragmentSend) app.getSupportFragmentManager().findFragmentByTag(FragmentSend.class.getName());
         if (fragmentSend != null && fragmentSend.isAdded()) {
             fragmentSend.setCryptoObject(request);
             return;
@@ -147,7 +149,7 @@ public class BRAnimator {
             if (request != null && !request.address.isEmpty()) {
                 fragmentSend.setCryptoObject(request);
             }
-            app.getFragmentManager().beginTransaction()
+            app.getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(0, 0, 0, R.animator.plain_300)
                     .add(android.R.id.content, fragmentSend, FragmentSend.class.getName())
                     .addToBackStack(FragmentSend.class.getName()).commit();
@@ -157,16 +159,16 @@ public class BRAnimator {
 
     }
 
-    public static void showSupportFragment(Activity app, String articleId) {
+    public static void showSupportFragment(AppCompatActivity app, String articleId) {
         if (supportIsShowing) return;
         supportIsShowing = true;
         if (app == null) {
             Log.e(TAG, "showSupportFragment: app is null");
             return;
         }
-        FragmentSupport fragmentSupport = (FragmentSupport) app.getFragmentManager().findFragmentByTag(FragmentSupport.class.getName());
+        FragmentSupport fragmentSupport = (FragmentSupport) app.getSupportFragmentManager().findFragmentByTag(FragmentSupport.class.getName());
         if (fragmentSupport != null && fragmentSupport.isAdded()) {
-            app.getFragmentManager().popBackStack();
+            app.getSupportFragmentManager().popBackStack();
             return;
         }
         try {
@@ -176,7 +178,7 @@ public class BRAnimator {
                 bundle.putString("articleId", articleId);
                 fragmentSupport.setArguments(bundle);
             }
-            app.getFragmentManager().beginTransaction()
+            app.getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(0, 0, 0, R.animator.plain_300)
                     .add(android.R.id.content, fragmentSupport, FragmentSend.class.getName())
                     .addToBackStack(FragmentSend.class.getName()).commit();
@@ -187,18 +189,18 @@ public class BRAnimator {
 
     }
 
-    public static void popBackStackTillEntry(Activity app, int entryIndex) {
+    public static void popBackStackTillEntry(AppCompatActivity app, int entryIndex) {
 
-        if (app.getFragmentManager() == null) {
+        if (app.getSupportFragmentManager() == null) {
             return;
         }
-        if (app.getFragmentManager().getBackStackEntryCount() <= entryIndex) {
+        if (app.getSupportFragmentManager().getBackStackEntryCount() <= entryIndex) {
             return;
         }
-        FragmentManager.BackStackEntry entry = app.getFragmentManager().getBackStackEntryAt(
+        FragmentManager.BackStackEntry entry = app.getSupportFragmentManager().getBackStackEntryAt(
                 entryIndex);
         if (entry != null) {
-            app.getFragmentManager().popBackStackImmediate(entry.getId(),
+            app.getSupportFragmentManager().popBackStackImmediate(entry.getId(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
@@ -229,9 +231,9 @@ public class BRAnimator {
 //
 //    }
 
-    public static void showTransactionDetails(Activity app, TxUiHolder item, int position){
+    public static void showTransactionDetails(AppCompatActivity app, TxUiHolder item, int position){
 
-        FragmentTxDetails txDetails = (FragmentTxDetails) app.getFragmentManager().findFragmentByTag(FragmentTxDetails.class.getName());
+        FragmentTxDetails txDetails = (FragmentTxDetails) app.getSupportFragmentManager().findFragmentByTag(FragmentTxDetails.class.getName());
 
         if(txDetails != null && txDetails.isAdded()){
             Log.e(TAG, "showTransactionDetails: Already showing");
@@ -241,11 +243,11 @@ public class BRAnimator {
 
         txDetails = new FragmentTxDetails();
         txDetails.setTransaction(item);
-        txDetails.show(app.getFragmentManager(), "txDetails");
+        txDetails.show(app.getSupportFragmentManager(), "txDetails");
 
     }
 
-    public static void openScanner(Activity app, int requestID) {
+    public static void openScanner(FragmentActivity app, int requestID) {
         try {
             if (app == null) return;
 
@@ -300,20 +302,20 @@ public class BRAnimator {
         return itemLayoutTransition;
     }
 
-    public static void showRequestFragment(Activity app) {
+    public static void showRequestFragment(AppCompatActivity app) {
         if (app == null) {
             Log.e(TAG, "showRequestFragment: app is null");
             return;
         }
 
-        FragmentRequestAmount fragmentRequestAmount = (FragmentRequestAmount) app.getFragmentManager().findFragmentByTag(FragmentRequestAmount.class.getName());
+        FragmentRequestAmount fragmentRequestAmount = (FragmentRequestAmount) app.getSupportFragmentManager().findFragmentByTag(FragmentRequestAmount.class.getName());
         if (fragmentRequestAmount != null && fragmentRequestAmount.isAdded())
             return;
 
         fragmentRequestAmount = new FragmentRequestAmount();
         Bundle bundle = new Bundle();
         fragmentRequestAmount.setArguments(bundle);
-        app.getFragmentManager().beginTransaction()
+        app.getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(0, 0, 0, R.animator.plain_300)
                 .add(android.R.id.content, fragmentRequestAmount, FragmentRequestAmount.class.getName())
                 .addToBackStack(FragmentRequestAmount.class.getName()).commit();
@@ -321,12 +323,12 @@ public class BRAnimator {
     }
 
     //isReceive tells the Animator that the Receive fragment is requested, not My Address
-    public static void showReceiveFragment(Activity app, boolean isReceive) {
+    public static void showReceiveFragment(AppCompatActivity app, boolean isReceive) {
         if (app == null) {
             Log.e(TAG, "showReceiveFragment: app is null");
             return;
         }
-        FragmentReceive fragmentReceive = (FragmentReceive) app.getFragmentManager().findFragmentByTag(FragmentReceive.class.getName());
+        FragmentReceive fragmentReceive = (FragmentReceive) app.getSupportFragmentManager().findFragmentByTag(FragmentReceive.class.getName());
         if (fragmentReceive != null && fragmentReceive.isAdded())
             return;
         fragmentReceive = new FragmentReceive();
@@ -334,19 +336,19 @@ public class BRAnimator {
         args.putBoolean("receive", isReceive);
         fragmentReceive.setArguments(args);
 
-        app.getFragmentManager().beginTransaction()
+        app.getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(0, 0, 0, R.animator.plain_300)
                 .add(android.R.id.content, fragmentReceive, FragmentReceive.class.getName())
                 .addToBackStack(FragmentReceive.class.getName()).commit();
 
     }
 
-    public static void showMenuFragment(Activity app) {
+    public static void showMenuFragment(AppCompatActivity app) {
         if (app == null) {
             Log.e(TAG, "showReceiveFragment: app is null");
             return;
         }
-        FragmentTransaction transaction = app.getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = app.getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(0, 0, 0, R.animator.plain_300);
         transaction.add(android.R.id.content, new FragmentMenu(), FragmentMenu.class.getName());
         transaction.addToBackStack(FragmentMenu.class.getName());
@@ -354,12 +356,12 @@ public class BRAnimator {
 
     }
 
-    public static void showGreetingsMessage(Activity app) {
+    public static void showGreetingsMessage(AppCompatActivity app) {
         if (app == null) {
             Log.e(TAG, "showGreetingsMessage: app is null");
             return;
         }
-        FragmentTransaction transaction = app.getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = app.getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(0, 0, 0, R.animator.plain_300);
         transaction.add(android.R.id.content, new FragmentGreetings(), FragmentGreetings.class.getName());
         transaction.addToBackStack(FragmentGreetings.class.getName());
@@ -385,17 +387,17 @@ public class BRAnimator {
         } else return false;
     }
 
-    public static void killAllFragments(Activity app) {
+    public static void killAllFragments(AppCompatActivity app) {
         if (app != null && !app.isDestroyed())
-            app.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            app.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    public static void startBreadIfNotStarted(Activity app) {
+    public static void startBreadIfNotStarted(FragmentActivity app) {
         if (!(app instanceof HomeActivity))
             startBreadActivity(app, false);
     }
 
-    public static void startBreadActivity(Activity from, boolean auth) {
+    public static void startBreadActivity(FragmentActivity from, boolean auth) {
         if (from == null) return;
         Log.e(TAG, "startBreadActivity: " + from.getClass().getName());
         Class toStart = auth ? LoginActivity.class : WalletActivity.class;
@@ -414,7 +416,7 @@ public class BRAnimator {
         signalLayout.setTranslationY(reverse ? translationY : translationY + signalHeight);
 
         signalLayout.animate().translationY(reverse ? IntroActivity.screenParametersPoint.y : translationY).setDuration(SLIDE_ANIMATION_DURATION)
-                .setInterpolator(reverse ? new DecelerateInterpolator() : new OvershootInterpolator(0.7f))
+                .setInterpolator(reverse ? (TimeInterpolator)new DecelerateInterpolator() : new OvershootInterpolator(0.7f))
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {

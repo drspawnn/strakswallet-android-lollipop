@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
@@ -225,21 +226,21 @@ public class BRKeyboard extends LinearLayout implements View.OnClickListener {
     }
 
     public void setBRKeyboardColor(int color) {
-        setBackgroundColor(getContext().getColor(color));
+        setBackgroundColor(ContextCompat.getColor(getContext(),color));
     }
 
     public void setBRButtonTextColor(int color) {
-        num0.setTextColor(getContext().getColor(color));
-        num1.setTextColor(getContext().getColor(color));
-        num2.setTextColor(getContext().getColor(color));
-        num3.setTextColor(getContext().getColor(color));
-        num4.setTextColor(getContext().getColor(color));
-        num5.setTextColor(getContext().getColor(color));
-        num6.setTextColor(getContext().getColor(color));
-        num7.setTextColor(getContext().getColor(color));
-        num8.setTextColor(getContext().getColor(color));
-        num9.setTextColor(getContext().getColor(color));
-        numDot.setTextColor(getContext().getColor(color));
+        num0.setTextColor(ContextCompat.getColor(getContext(),color));
+        num1.setTextColor(ContextCompat.getColor(getContext(),color));
+        num2.setTextColor(ContextCompat.getColor(getContext(),color));
+        num3.setTextColor(ContextCompat.getColor(getContext(),color));
+        num4.setTextColor(ContextCompat.getColor(getContext(),color));
+        num5.setTextColor(ContextCompat.getColor(getContext(),color));
+        num6.setTextColor(ContextCompat.getColor(getContext(),color));
+        num7.setTextColor(ContextCompat.getColor(getContext(),color));
+        num8.setTextColor(ContextCompat.getColor(getContext(),color));
+        num9.setTextColor(ContextCompat.getColor(getContext(),color));
+        numDot.setTextColor(ContextCompat.getColor(getContext(),color));
 //        numDelete.setColorFilter(getContext().getColor(color));
         invalidate();
     }

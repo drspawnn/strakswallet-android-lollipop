@@ -1,12 +1,13 @@
 package com.strakswallet.tools.qrcode;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -120,7 +121,7 @@ public class QRUtils {
 
     public static boolean generateQR(Context ctx, String bitcoinURL, ImageView qrcode) {
         if (qrcode == null || bitcoinURL == null || bitcoinURL.isEmpty()) return false;
-        WindowManager manager = (WindowManager) ctx.getSystemService(Activity.WINDOW_SERVICE);
+        WindowManager manager = (WindowManager) ctx.getSystemService(AppCompatActivity.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
@@ -148,7 +149,7 @@ public class QRUtils {
         return null;
     }
 
-    public static void share(String via, Activity app, String bitcoinUri) {
+    public static void share(String via, FragmentActivity app, String bitcoinUri) {
         if (app == null) {
             Log.e(TAG, "share: app is null");
             return;
@@ -184,7 +185,7 @@ public class QRUtils {
 
     }
 
-    private static File saveToExternalStorage(Bitmap bitmapImage, Activity app) {
+    private static File saveToExternalStorage(Bitmap bitmapImage, FragmentActivity app) {
         if (app == null) {
             Log.e(TAG, "saveToExternalStorage: app is null");
             return null;

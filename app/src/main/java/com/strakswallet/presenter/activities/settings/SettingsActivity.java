@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -80,7 +80,7 @@ public class SettingsActivity extends BRActivity {
 
             View v;
             BRSettingsItem item = items.get(position);
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
 
             if (item.isSection) {
                 v = inflater.inflate(settings_list_section, parent, false);
@@ -94,12 +94,12 @@ public class SettingsActivity extends BRActivity {
                 }
 
 
-                if (position == 10) {
+                if (position == 9) {
                     ImageButton leaveArrow = v.findViewById(R.id.arrow_leave);
                     ImageButton chevronRight = v.findViewById(R.id.chevron_right);
                     leaveArrow.setVisibility(View.VISIBLE);
                     chevronRight.setVisibility(View.INVISIBLE);
-                } else if (position == 9) {
+                } else if (position == 8) {
                     boolean shareData = BRSharedPrefs.getShareData(SettingsActivity.this);
                     if (shareData) {
                         addon.setText("ON");
@@ -287,6 +287,7 @@ public class SettingsActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

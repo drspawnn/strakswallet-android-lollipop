@@ -9,26 +9,35 @@
     android:background="@drawable/bread_gradient"
     tools:context="com.strakswallet.presenter.activities.LoginActivity">
 
-    <ImageView
-        android:id="@+id/title"
-        android:layout_width="96dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        android:src="@drawable/brd_logo_white"
-        android:textColor="@color/white"
-        android:textSize="48sp"
-        app:customTFont="Celevenia.otf"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/brkeyboard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttons_layout"
-        app:layout_constraintVertical_bias="0.120000005"/>
+        app:layout_constraintVertical_bias="0.120000005">
+
+        <ImageView
+            android:id="@+id/title"
+            android:layout_width="128dp"
+            android:layout_height="64dp"
+            android:gravity="center_horizontal"
+            android:src="@drawable/brd_logo_white" />
+
+        <ImageView
+            android:id="@+id/title2"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_marginLeft="48dp"
+            android:gravity="center_horizontal"
+            android:src="@drawable/lollipop5" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/pinLayout"

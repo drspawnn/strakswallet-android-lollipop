@@ -1,8 +1,9 @@
 package com.strakswallet.presenter.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,6 +28,7 @@ import com.strakswallet.tools.security.SmartValidator;
 import com.strakswallet.tools.util.BRConstants;
 import com.strakswallet.tools.util.Utils;
 import com.strakswallet.wallet.WalletsMaster;
+
 
 public class InputWordsActivity extends BRActivity {
     private static final String TAG = InputWordsActivity.class.getName();
@@ -158,7 +160,7 @@ public class InputWordsActivity extends BRActivity {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                final Activity app = InputWordsActivity.this;
+                final AppCompatActivity app = InputWordsActivity.this;
                 String phraseToCheck = getPhrase();
                 if (Utils.isEmulatorOrDebug(app) && !Utils.isNullOrEmpty(debugPhrase)) {
                     phraseToCheck = debugPhrase;
@@ -244,7 +246,7 @@ public class InputWordsActivity extends BRActivity {
         overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
         startActivity(intent);
         if (!InputWordsActivity.this.isDestroyed()) finish();
-        Activity app = WalletActivity.getApp();
+        AppCompatActivity app = WalletActivity.getApp();
         if (app != null && !app.isDestroyed()) app.finish();
     }
 
@@ -358,6 +360,7 @@ public class InputWordsActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     private class FocusListener implements View.OnFocusChangeListener {
@@ -367,7 +370,7 @@ public class InputWordsActivity extends BRActivity {
             if (!hasFocus) {
                 validateWord((EditText) v);
             } else {
-                ((EditText) v).setTextColor(getColor(R.color.light_gray));
+                ((EditText) v).setTextColor(ContextCompat.getColor(app.getApplicationContext(),R.color.light_gray));
             }
         }
     }
@@ -375,7 +378,7 @@ public class InputWordsActivity extends BRActivity {
     private void validateWord(EditText view) {
         String word = view.getText().toString();
         boolean valid = SmartValidator.isWordValid(this, word);
-        view.setTextColor(getColor(valid ? R.color.light_gray : R.color.red_text));
+        view.setTextColor(ContextCompat.getColor(app.getApplicationContext(),valid ? R.color.light_gray : R.color.red_text));
         if (!valid)
             SpringAnimator.failShakeAnimation(this, view);
     }

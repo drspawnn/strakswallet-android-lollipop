@@ -2,7 +2,7 @@ package com.strakswallet.presenter.customviews;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -136,7 +136,7 @@ public class BRDialogView extends DialogFragment {
         if (showHelpIcon) {
             helpButton.setVisibility(View.VISIBLE);
 
-            messageText.setPadding(0, 0, 0, Utils.getPixelsFromDps(getContext(), 16));
+            messageText.setPadding(0, 0, 0, Utils.getPixelsFromDps(getActivity().getBaseContext(), 16));
 
             helpButton.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -1,9 +1,10 @@
 package com.strakswallet.presenter.activities.util;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.strakswallet.BreadApp;
@@ -48,7 +49,7 @@ import com.platform.tools.BRBitId;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-public class BRActivity extends Activity {
+public class BRActivity extends AppCompatActivity {
     private static final String TAG = BRActivity.class.getName();
     public static final Point screenParametersPoint = new Point();
 
@@ -80,6 +81,7 @@ public class BRActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -168,7 +170,7 @@ public class BRActivity extends Activity {
                 break;
 
             case BRConstants.SCANNER_REQUEST:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
                     BRExecutor.getInstance().forLightWeightBackgroundTasks().execute(new Runnable() {
                         @Override
                         public void run() {
@@ -211,7 +213,7 @@ public class BRActivity extends Activity {
         }
     }
 
-    public void init(Activity app) {
+    public void init(AppCompatActivity app) {
         //set status bar color
 //        ActivityUTILS.setStatusBarColor(app, android.R.color.transparent);
         InternetManager.getInstance();
@@ -237,14 +239,14 @@ public class BRActivity extends Activity {
 
     }
 
-    private void lockIfNeeded(Activity app) {
+    private void lockIfNeeded(AppCompatActivity app) {
         //lock wallet if 3 minutes passed
         if (BreadApp.backgroundedTime != 0
                 && ((System.currentTimeMillis() - BreadApp.backgroundedTime) >= 180 * 1000)
                 && !(app instanceof DisabledActivity)) {
             if (!BRKeyStore.getPinCode(app).isEmpty()) {
                 Log.e(TAG, "lockIfNeeded: " + BreadApp.backgroundedTime);
-                BRAnimator.startBreadActivity(app, true);
+                BRAnimator.startBreadActivity((FragmentActivity)app, true);
             }
         }
 

@@ -1,12 +1,13 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -64,6 +65,7 @@ public class NodesActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class NodesActivity extends BRActivity {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                final Activity app = NodesActivity.this;
+                final AppCompatActivity app = NodesActivity.this;
                 final WalletBitcoinManager wm = WalletBitcoinManager.getInstance(NodesActivity.this);
 
                 if (BRSharedPrefs.getTrustNode(app, wm.getIso(app)).isEmpty()) {
@@ -209,12 +211,12 @@ public class NodesActivity extends BRActivity {
 
                 } else {
                     customTitle.setText("Invalid Node");
-                    customTitle.setTextColor(app.getColor(R.color.warning_color));
+                    customTitle.setTextColor(ContextCompat.getColor(app.getBaseContext(),R.color.warning_color));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             customTitle.setText(getString(R.string.NodeSelector_enterTitle));
-                            customTitle.setTextColor(app.getColor(R.color.almost_black));
+                            customTitle.setTextColor(ContextCompat.getColor(app.getBaseContext(),R.color.almost_black));
                         }
                     }, 1000);
                 }

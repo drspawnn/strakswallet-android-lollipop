@@ -1,6 +1,7 @@
 package com.strakswallet.tools.animation;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -92,7 +93,7 @@ public class SpringAnimator {
         view.startAnimation(trans);
     }
 
-    public static void failShakeAnimation(Activity context, View view) {
+    public static void failShakeAnimation(FragmentActivity context, View view) {
         if (view == null) return;
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
         view.setVisibility(View.VISIBLE);

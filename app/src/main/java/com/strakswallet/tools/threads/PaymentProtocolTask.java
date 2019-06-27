@@ -1,6 +1,6 @@
 package com.strakswallet.tools.threads;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -72,12 +72,12 @@ public class PaymentProtocolTask extends AsyncTask<String, String, String> {
     private String certName;
     private BRCorePaymentProtocolRequest paymentProtocolRequest;
     private int certified = 0;
-    private Activity app;
+    private AppCompatActivity app;
 
     //params[0] = uri, params[1] = label
     @Override
     protected String doInBackground(String... params) {
-        app = (Activity) BreadApp.getBreadContext();
+        app = (AppCompatActivity) BreadApp.getBreadContext();
         InputStream in;
         try {
             Log.e(TAG, "the uri: " + params[0]);
@@ -322,7 +322,7 @@ public class PaymentProtocolTask extends AsyncTask<String, String, String> {
         return (index != -1 && endIndex != -1) ? cleanCN : null;
     }
 
-    private void continueWithThePayment(final Activity app, final String certification) {
+    private void continueWithThePayment(final AppCompatActivity app, final String certification) {
 
 
         BRCoreTransactionOutput[] outputs = paymentProtocolRequest.getOutputs();

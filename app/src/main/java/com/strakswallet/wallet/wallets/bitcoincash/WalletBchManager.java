@@ -1,10 +1,11 @@
 package com.strakswallet.wallet.wallets.bitcoincash;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -535,14 +536,14 @@ public class WalletBchManager extends BRCoreWalletManager implements BaseWalletM
         BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
             @Override
             public void run() {
-                if (app instanceof Activity)
-                    BRAnimator.showBreadSignal((Activity) app, Utils.isNullOrEmpty(error) ? app.getString(R.string.Alerts_sendSuccess) : app.getString(R.string.Alert_error),
+                if (app instanceof AppCompatActivity)
+                    BRAnimator.showBreadSignal((AppCompatActivity) app, Utils.isNullOrEmpty(error) ? app.getString(R.string.Alerts_sendSuccess) : app.getString(R.string.Alert_error),
                             Utils.isNullOrEmpty(error) ? app.getString(R.string.Alerts_sendSuccessSubheader) : "Error: " + error,
                             Utils.isNullOrEmpty(error) ? R.drawable.ic_check_mark_white : R.drawable.ic_error_outline_black_24dp, new BROnSignalCompletion() {
                                 @Override
                                 public void onComplete() {
-                                    if (!((Activity) app).isDestroyed())
-                                        ((Activity) app).getFragmentManager().popBackStack();
+                                    if (!((AppCompatActivity) app).isDestroyed())
+                                        ((AppCompatActivity) app).getSupportFragmentManager().popBackStack();
                                 }
                             });
             }
@@ -747,7 +748,7 @@ public class WalletBchManager extends BRCoreWalletManager implements BaseWalletM
                                 }
 
                                 if (BRSharedPrefs.getShowNotification(ctx))
-                                    BRNotificationManager.sendNotification((Activity) ctx, R.drawable.notification_icon, ctx.getString(R.string.app_name), strToShow, 1);
+                                    BRNotificationManager.sendNotification((AppCompatActivity) ctx, R.drawable.notification_icon, ctx.getString(R.string.app_name), strToShow, 1);
                             }
                         }
                     }, 1000);

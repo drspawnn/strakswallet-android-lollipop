@@ -1,6 +1,6 @@
 package com.strakswallet.tools.security;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.util.Log;
 
@@ -89,7 +89,7 @@ public class SmartValidator {
         return Arrays.equals(pubKey, pubKeyFromKeyStore);
     }
 
-    public static boolean checkFirstAddress(Activity app, byte[] mpk) {
+    public static boolean checkFirstAddress(AppCompatActivity app, byte[] mpk) {
         String addressFromPrefs = BRSharedPrefs.getFirstAddress(app);
 
         String generatedAddress = new BRCoreMasterPubKey(mpk, false).getPubKeyAsCoreKey().address();

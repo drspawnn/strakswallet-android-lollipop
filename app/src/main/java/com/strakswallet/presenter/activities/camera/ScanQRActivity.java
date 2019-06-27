@@ -1,14 +1,14 @@
 package com.strakswallet.presenter.activities.camera;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v13.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,7 +186,7 @@ public class ScanQRActivity extends BRActivity implements ActivityCompat.OnReque
                         descriptionText.setText("");
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("result", text);
-                        setResult(Activity.RESULT_OK, returnIntent);
+                        setResult(AppCompatActivity.RESULT_OK, returnIntent);
                         finish();
                     } finally {
                         handlingCode = false;
@@ -223,5 +223,6 @@ public class ScanQRActivity extends BRActivity implements ActivityCompat.OnReque
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

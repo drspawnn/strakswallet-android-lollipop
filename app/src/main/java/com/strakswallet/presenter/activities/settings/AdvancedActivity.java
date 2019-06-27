@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -72,7 +72,7 @@ public class AdvancedActivity extends BRActivity {
 
             View v;
             BRSettingsItem item = items.get(position);
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
 
             if (item.isSection) {
                 v = inflater.inflate(settings_list_section, parent, false);
@@ -141,6 +141,7 @@ public class AdvancedActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

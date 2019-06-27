@@ -1,6 +1,6 @@
 package com.strakswallet.tools.manager;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -110,7 +110,7 @@ public class PromptManager {
         return null;
     }
 
-    public PromptInfo promptInfo(final Activity app, PromptItem item) {
+    public PromptInfo promptInfo(final AppCompatActivity app, PromptItem item) {
         switch (item) {
             case FINGER_PRINT:
                 return new PromptInfo(app.getString(R.string.Prompts_TouchId_title_android), app.getString(R.string.Prompts_TouchId_body_android), new View.OnClickListener() {

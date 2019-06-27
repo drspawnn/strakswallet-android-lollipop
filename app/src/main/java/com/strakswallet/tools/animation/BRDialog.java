@@ -1,9 +1,10 @@
 package com.strakswallet.tools.animation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.util.Log;
 
@@ -47,7 +48,7 @@ public class BRDialog {
     public static void showCustomDialog(@NonNull final Context app, @NonNull final String title, @NonNull final String message,
                                         @NonNull final String posButton, final String negButton, final BRDialogView.BROnClickListener posListener,
                                         final BRDialogView.BROnClickListener negListener, final DialogInterface.OnDismissListener dismissListener, final int iconRes) {
-        if (((Activity) app).isDestroyed()) {
+        if (((AppCompatActivity) app).isDestroyed()) {
             Log.e(TAG, "showCustomDialog: FAILED, context is destroyed");
             return;
         }
@@ -65,14 +66,16 @@ public class BRDialog {
                 dialog.setDismissListener(dismissListener);
                 dialog.setIconRes(iconRes);
                 dialog.setCancelable(true);
-                dialog.show(((Activity) app).getFragmentManager(), dialog.getClass().getName());
+                dialog.show(((AppCompatActivity) app).getSupportFragmentManager(), dialog.getClass().getName());
             }
         });
+
     }
+
     public static void showCustomDialog(@NonNull final Context app, @NonNull final String title, @NonNull final String message,
-                                                @NonNull final String posButton, final String negButton, final BRDialogView.BROnClickListener posListener,
-                                                final BRDialogView.BROnClickListener negListener, final DialogInterface.OnDismissListener dismissListener, final int iconRes, final boolean isCancelable) {
-        if (((Activity) app).isDestroyed()) {
+                                        @NonNull final String posButton, final String negButton, final BRDialogView.BROnClickListener posListener,
+                                        final BRDialogView.BROnClickListener negListener, final DialogInterface.OnDismissListener dismissListener, final int iconRes, final boolean isCancelable) {
+        if (((AppCompatActivity) app).isDestroyed()) {
             Log.e(TAG, "showCustomDialog: FAILED, context is destroyed");
             return;
         }
@@ -90,14 +93,14 @@ public class BRDialog {
                 dialog.setDismissListener(dismissListener);
                 dialog.setIconRes(iconRes);
                 dialog.setCancelable(isCancelable);
-                dialog.show(((Activity) app).getFragmentManager(), dialog.getClass().getName());
+                dialog.show(((AppCompatActivity) app).getSupportFragmentManager(), dialog.getClass().getName());
             }
         });
     }
 
     public static void showHelpDialog(@NonNull final Context app, @NonNull final String title, @NonNull final String message, @NonNull final String posButton, @NonNull final String negButton, final BRDialogView.BROnClickListener posListener, final BRDialogView.BROnClickListener negListener, final BRDialogView.BROnClickListener helpListener) {
 
-        if (((Activity) app).isDestroyed()) {
+        if (((AppCompatActivity) app).isDestroyed()) {
             Log.e(TAG, "showCustomDialog: FAILED, context is destroyed");
             return;
         }
@@ -114,7 +117,7 @@ public class BRDialog {
                 dialog.setNegListener(negListener);
                 dialog.setHelpListener(helpListener);
                 dialog.showHelpIcon(true);
-                dialog.show(((Activity) app).getFragmentManager(), dialog.getClass().getName());
+                dialog.show(((AppCompatActivity) app).getSupportFragmentManager(), dialog.getClass().getName());
 
             }
         });
@@ -133,7 +136,7 @@ public class BRDialog {
     public static void showCustomDialog(@NonNull final Context app, @NonNull final String title, @NonNull final SpannableString message,
                                         @NonNull final String posButton, final String negButton, final BRDialogView.BROnClickListener posListener,
                                         final BRDialogView.BROnClickListener negListener, final DialogInterface.OnDismissListener dismissListener, final int iconRes) {
-        if (((Activity) app).isDestroyed()) {
+        if (((AppCompatActivity) app).isDestroyed()) {
             Log.e(TAG, "showCustomDialog: FAILED, context is destroyed");
             return;
         }
@@ -150,7 +153,7 @@ public class BRDialog {
                 dialog.setNegListener(negListener);
                 dialog.setDismissListener(dismissListener);
                 dialog.setIconRes(iconRes);
-                dialog.show(((Activity) app).getFragmentManager(), dialog.getClass().getName());
+                dialog.show(((AppCompatActivity) app).getSupportFragmentManager(), dialog.getClass().getName());
             }
         });
     }

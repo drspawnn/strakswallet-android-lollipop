@@ -1,6 +1,6 @@
 package com.platform;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -159,7 +159,7 @@ public class HTTPServer {
                 BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
                     @Override
                     public void run() {
-                        ((Activity) app).onBackPressed();
+                        ((AppCompatActivity) app).onBackPressed();
                     }
                 });
                 return BRHTTPHelper.handleSuccess(200, null, baseRequest, response, null);

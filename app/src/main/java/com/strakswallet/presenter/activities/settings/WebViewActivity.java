@@ -2,7 +2,6 @@ package com.strakswallet.presenter.activities.settings;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -15,6 +14,7 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v13.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -353,6 +353,7 @@ public class WebViewActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 
@@ -540,7 +541,7 @@ public class WebViewActivity extends BRActivity {
         Uri[] results = null;
 
         // Check that the response is a good one
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == AppCompatActivity.RESULT_OK) {
             Log.d(TAG, "Photo Path -> " + mCameraPhotoPath);
 
             if (data != null && data.getDataString() != null && !data.getDataString().isEmpty()) {

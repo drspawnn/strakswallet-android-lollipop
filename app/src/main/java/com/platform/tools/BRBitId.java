@@ -1,6 +1,8 @@
 package com.platform.tools;
 
-import android.app.Activity;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.net.Uri;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.util.Base64;
@@ -89,7 +91,7 @@ public class BRBitId {
         return false;
     }
 
-    public static void signBitID(final Activity app, String uri, JSONObject jsonBody) {
+    public static void signBitID(final AppCompatActivity app, String uri, JSONObject jsonBody) {
 
         if (uri == null && jsonBody != null) {
             try {
@@ -172,7 +174,7 @@ public class BRBitId {
         });
     }
 
-    public static void completeBitID(final Activity app, boolean authenticated) {
+    public static void completeBitID(final AppCompatActivity app, boolean authenticated) {
         final byte[] phrase;
         final byte[] nulTermPhrase;
         final byte[] seed;
@@ -193,7 +195,7 @@ public class BRBitId {
 
         try {
             phrase = BRKeyStore.getPhrase(app, BRConstants.REQUEST_PHRASE_BITID);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e) {//UserNotAuthenticatedException e) {
             return;
         }
         if (Utils.isNullOrEmpty(phrase)) throw new NullPointerException("cant happen");
@@ -230,7 +232,7 @@ public class BRBitId {
 
     }
 
-    private static void bitIdPlatform(Activity app, Uri uri, byte[] seed) {
+    private static void bitIdPlatform(AppCompatActivity app, Uri uri, byte[] seed) {
 
         final String biUri = uri.getHost() == null ? uri.toString() : uri.getHost();
         final byte[] key = BRCoreMasterPubKey.bip32BitIDKey(seed, _index, biUri);
@@ -274,7 +276,7 @@ public class BRBitId {
         WalletPlugin.sendBitIdResponse(postJson, true);
     }
 
-    private static void bitIdLink(Activity app, Uri uri, byte[] seed) {
+    private static void bitIdLink(AppCompatActivity app, Uri uri, byte[] seed) {
         String nonce = null;
         String scheme = "https";
 
@@ -333,7 +335,7 @@ public class BRBitId {
         }
     }
 
-    public static String newNonce(Activity app, String nonceKey) {
+    public static String newNonce(AppCompatActivity app, String nonceKey) {
         // load previous nonces. we save all nonces generated for each service
         // so they are not used twice from the same device
         List<Integer> existingNonces = BRSharedPrefs.getBitIdNonces(app, nonceKey);

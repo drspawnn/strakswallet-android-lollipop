@@ -1,12 +1,13 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,13 +131,13 @@ public class FragmentReceive extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app == null) {
                     Log.e(TAG, "onClick: app is null, can't start the webview with url: " + URL_SUPPORT);
                     return;
                 }
 
-                BRAnimator.showSupportFragment(app, BRConstants.receive);
+                BRAnimator.showSupportFragment((AppCompatActivity)app, BRConstants.receive);
             }
         });
 
@@ -191,9 +192,9 @@ public class FragmentReceive extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                Activity app = getActivity();
-                app.getFragmentManager().popBackStack();
-                BRAnimator.showRequestFragment(app);
+                FragmentActivity app = getActivity();
+                app.getSupportFragmentManager().popBackStack();
+                BRAnimator.showRequestFragment((AppCompatActivity)app);
 
             }
         });
@@ -216,9 +217,9 @@ public class FragmentReceive extends Fragment {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app != null)
-                    app.getFragmentManager().popBackStack();
+                    app.getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -288,7 +289,7 @@ public class FragmentReceive extends Fragment {
     }
 
     private void updateQr() {
-        final Context ctx = getContext() == null ? BreadApp.getBreadContext() : (Activity) getContext();
+        final Context ctx = getContext() == null ? BreadApp.getBreadContext() : (AppCompatActivity) getContext();
         BRExecutor.getInstance().forLightWeightBackgroundTasks().execute(new Runnable() {
             @Override
             public void run() {
@@ -312,7 +313,7 @@ public class FragmentReceive extends Fragment {
     }
 
     private void copyText() {
-        Activity app = getActivity();
+        FragmentActivity app = getActivity();
         BRClipboardManager.putClipboard(app, mAddress.getText().toString());
         //copy the legacy for testing purposes (testnet faucet money receiving)
         if (Utils.isEmulatorOrDebug(app) && BuildConfig.STRAKS_TESTNET)
@@ -328,9 +329,9 @@ public class FragmentReceive extends Fragment {
         animateSignalSlide(signalLayout, true, new BRAnimator.OnSlideAnimationEnd() {
             @Override
             public void onAnimationEnd() {
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app != null && !app.isDestroyed())
-                    app.getFragmentManager().popBackStack();
+                    app.getSupportFragmentManager().popBackStack();
             }
         });
     }

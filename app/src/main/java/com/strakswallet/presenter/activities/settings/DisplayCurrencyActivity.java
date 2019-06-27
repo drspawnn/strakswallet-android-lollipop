@@ -1,10 +1,11 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.test.espresso.core.internal.deps.guava.base.Strings;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,6 @@ import org.eclipse.jetty.util.StringUtil;
 
 import java.math.BigDecimal;
 import java.util.Currency;
-import java.util.List;
 
 
 public class DisplayCurrencyActivity extends BRActivity {
@@ -57,6 +57,7 @@ public class DisplayCurrencyActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -79,8 +80,7 @@ public class DisplayCurrencyActivity extends BRActivity {
         exchangeText = findViewById(R.id.exchange_text);
         listView = findViewById(R.id.currency_list_view);
         adapter = new CurrencyListAdapter(this);
-        List<CurrencyEntity> currencies = CurrencyDataSource.getInstance(this).getAllCurrencies(this, WalletsMaster.getInstance(this).getCurrentWallet(this).getIso(this));
-        adapter.addAll(currencies);
+        adapter.addAll(CurrencyDataSource.getInstance(this).getAllCurrencies(this, WalletsMaster.getInstance(this).getCurrentWallet(this).getIso(this)));
         leftButton = findViewById(R.id.left_button);
         rightButton = findViewById(R.id.right_button);
         leftButton.setOnClickListener(new View.OnClickListener() {
@@ -137,15 +137,15 @@ public class DisplayCurrencyActivity extends BRActivity {
     private void setButton(boolean left) {
         if (left) {
             BRSharedPrefs.putCryptoDenomination(this, mWalletManager.getIso(this), BRConstants.CURRENT_UNIT_BITS);
-            leftButton.setTextColor(getColor(R.color.white));
+            leftButton.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.white));
             leftButton.setBackground(getDrawable(R.drawable.b_half_left_blue));
-            rightButton.setTextColor(getColor(R.color.dark_blue));
+            rightButton.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.dark_blue));
             rightButton.setBackground(getDrawable(R.drawable.b_half_right_blue_stroke));
         } else {
             BRSharedPrefs.putCryptoDenomination(this, mWalletManager.getIso(this), BRConstants.CURRENT_UNIT_STRAKS);
-            leftButton.setTextColor(getColor(R.color.dark_blue));
+            leftButton.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.dark_blue));
             leftButton.setBackground(getDrawable(R.drawable.b_half_left_blue_stroke));
-            rightButton.setTextColor(getColor(R.color.white));
+            rightButton.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.white));
             rightButton.setBackground(getDrawable(R.drawable.b_half_right_blue));
         }
         updateExchangeRate();
@@ -185,7 +185,7 @@ public class DisplayCurrencyActivity extends BRActivity {
 
             this.layoutResourceId = R.layout.currency_list_item;
             this.mContext = mContext;
-            ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(displayParameters);
+            ((AppCompatActivity) mContext).getWindowManager().getDefaultDisplay().getSize(displayParameters);
 //        currencyListAdapter = this;
         }
 
@@ -195,7 +195,7 @@ public class DisplayCurrencyActivity extends BRActivity {
             final String oldIso = BRSharedPrefs.getPreferredFiatIso(mContext);
             if (convertView == null) {
                 // inflate the layout
-                LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+                LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
                 convertView = inflater.inflate(layoutResourceId, parent, false);
             }
             // get the TextView and then set the text (item name) and tag (item ID) values

@@ -1,17 +1,20 @@
 package com.strakswallet.tools.security;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.strakswallet.BreadApp;
 import com.strakswallet.R;
 import com.strakswallet.presenter.activities.DisabledActivity;
+import com.strakswallet.presenter.activities.WalletActivity;
 import com.strakswallet.presenter.activities.util.ActivityUTILS;
 import com.strakswallet.presenter.customviews.BRDialogView;
 import com.strakswallet.presenter.fragments.FragmentFingerprint;
@@ -79,7 +82,7 @@ public class AuthManager {
         boolean match = pass != null && tempPass.equals(pass);
         if (!match) {
             if (BRKeyStore.getFailCount(context) >= 3) {
-                setWalletDisabled((Activity) context);
+                setWalletDisabled((AppCompatActivity) context);
             }
         }
 
@@ -111,25 +114,25 @@ public class AuthManager {
 
     }
 
-    public boolean isWalletDisabled(Activity app) {
+    public boolean isWalletDisabled(AppCompatActivity app) {
         int failCount = BRKeyStore.getFailCount(app);
         return failCount >= 3 && disabledUntil(app) > BRSharedPrefs.getSecureTime(app);
 
     }
 
-    public long disabledUntil(Activity app) {
+    public long disabledUntil(AppCompatActivity app) {
         int failCount = BRKeyStore.getFailCount(app);
         long failTimestamp = BRKeyStore.getFailTimeStamp(app);
         double pow = Math.pow(6, failCount - 3) * 60;
         return (long) ((failTimestamp + pow * 1000));
     }
 
-    public void setWalletDisabled(Activity app) {
+    public void setWalletDisabled(AppCompatActivity app) {
         if (!(app instanceof DisabledActivity))
             ActivityUTILS.showWalletDisabled(app);
     }
 
-    public void setPinCode(String pass, Activity context) {
+    public void setPinCode(String pass, AppCompatActivity context) {
         BRKeyStore.putFailCount(0, context);
         BRKeyStore.putPinCode(pass, context);
         BRKeyStore.putLastPinUsedTime(System.currentTimeMillis(), context);
@@ -150,7 +153,7 @@ public class AuthManager {
         BRKeyStore.putTotalLimit(limit, activity);
     }
 
-    private void setSpendingLimitIfNotSet(final Activity activity) {
+    private void setSpendingLimitIfNotSet(final AppCompatActivity activity) {
         if (activity == null) return;
         long limit = AuthManager.getInstance().getTotalLimit(activity);
         if (limit == 0) {
@@ -206,11 +209,11 @@ public class AuthManager {
     }
 
     public void authPrompt(final Context context, String title, String message, boolean forcePin, boolean forceFingerprint, BRAuthCompletion completion) {
-        if (context == null || !(context instanceof Activity)) {
+        if (context == null || !(context instanceof AppCompatActivity)) {
             Log.e(TAG, "authPrompt: context is null or not Activity: " + context);
             return;
         }
-        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
+        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(AppCompatActivity.KEYGUARD_SERVICE);
 
         boolean useFingerPrint = isFingerPrintAvailableAndSetup(context);
 
@@ -229,7 +232,7 @@ public class AuthManager {
         if (forcePin)
             useFingerPrint = false;
 
-        final Activity app = (Activity) context;
+        final AppCompatActivity app = (AppCompatActivity) context;
 
         FragmentFingerprint fingerprintFragment;
         FragmentPin breadPin;
@@ -242,7 +245,7 @@ public class AuthManager {
                 args.putString("message", message);
                 fingerprintFragment.setArguments(args);
                 fingerprintFragment.setCompletion(completion);
-                FragmentTransaction transaction = app.getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = app.getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(0, 0, 0, R.animator.plain_300);
                 transaction.add(android.R.id.content, fingerprintFragment, FragmentFingerprint.class.getName());
                 transaction.addToBackStack(null);
@@ -255,7 +258,7 @@ public class AuthManager {
                 args.putString("message", message);
                 breadPin.setArguments(args);
                 breadPin.setCompletion(completion);
-                FragmentTransaction transaction = app.getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = app.getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(0, 0, 0, R.animator.plain_300);
                 transaction.add(android.R.id.content, breadPin, breadPin.getClass().getName());
                 transaction.addToBackStack(null);

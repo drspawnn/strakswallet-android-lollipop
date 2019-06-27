@@ -1,10 +1,11 @@
 package com.strakswallet.presenter.activities;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -119,7 +120,7 @@ public class PaperKeyActivity extends BRActivity {
             if (wordArray.length != 12) {
                 BRReportsManager.reportBug(new IllegalArgumentException("Wrong number of paper keys: " + wordArray.length + ", lang: " + Locale.getDefault().getLanguage()), true);
             }
-            WordPagerAdapter adapter = new WordPagerAdapter(getFragmentManager());
+            WordPagerAdapter adapter = new WordPagerAdapter(getSupportFragmentManager());
             adapter.setWords(wordArray);
             wordViewPager.setAdapter(adapter);
             for (int i = 0; i < wordArray.length; i++) {
@@ -150,7 +151,7 @@ public class PaperKeyActivity extends BRActivity {
     }
 
     private void setButtonEnabled(boolean b) {
-        previousButton.setTextColor(getColor(b ? R.color.light_gray : R.color.extra_light_gray));
+        previousButton.setTextColor(ContextCompat.getColor(getBaseContext(),b ? R.color.light_gray : R.color.extra_light_gray));
         Resources r = getResources();
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, b ? 8 : 0, r.getDisplayMetrics());
         previousButton.setElevation(px);
@@ -208,5 +209,6 @@ public class PaperKeyActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

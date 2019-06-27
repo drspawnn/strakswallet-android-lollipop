@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
@@ -120,7 +121,7 @@ public class LoginActivity extends BRActivity {
         keyboard.setBRButtonTextColor(R.color.white);
         keyboard.setShowDot(false);
         keyboard.setBreadground(getDrawable(R.drawable.bread_gradient));
-        keyboard.setCustomButtonBackgroundColor(10, getColor(android.R.color.transparent));
+        keyboard.setCustomButtonBackgroundColor(10, ContextCompat.getColor(this,android.R.color.transparent));
         keyboard.setDeleteImage(getDrawable(R.drawable.ic_delete_white));
 
         leftButton = (Button) findViewById(R.id.left_button);
@@ -278,7 +279,7 @@ public class LoginActivity extends BRActivity {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             super.onBackPressed();
         } else {
             finishAffinity();
@@ -341,7 +342,7 @@ public class LoginActivity extends BRActivity {
     }
 
     private void setUpOfflineButtons() {
-        int activeColor = getColor(white);
+        int activeColor = ContextCompat.getColor(this,white);
         GradientDrawable leftDrawable = (GradientDrawable) leftButton.getBackground().getCurrent();
         GradientDrawable rightDrawable = (GradientDrawable) rightButton.getBackground().getCurrent();
 
@@ -385,6 +386,7 @@ public class LoginActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 }

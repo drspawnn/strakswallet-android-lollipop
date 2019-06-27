@@ -158,7 +158,7 @@ public class ReEnterPinActivity extends BRActivity {
     private void verifyPin() {
         if (firstPIN.equalsIgnoreCase(pin.toString())) {
             AuthManager.getInstance().authSuccess(this);
-//            Log.e(TAG, "verifyPin: SUCCESS");
+            Log.i(TAG, "verifyPin: SUCCESS "+ pin.toString());
             isPressAllowed = false;
             new Handler().postDelayed(new Runnable() {
                 @Override

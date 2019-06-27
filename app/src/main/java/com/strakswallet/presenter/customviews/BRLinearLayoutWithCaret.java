@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.LinearLayout;
@@ -103,16 +104,16 @@ public class BRLinearLayoutWithCaret extends LinearLayout {
         strokePaint.setStyle(Paint.Style.STROKE);
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
         strokePaint.setStrokeWidth(px);
-        strokePaint.setColor(getContext().getColor(R.color.separator_gray));
+        strokePaint.setColor(ContextCompat.getColor(getContext(),R.color.separator_gray));
 
         path_stroke = new Path();
         path_background = new Path();
 
         backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         backgroundPaint.setStyle(Paint.Style.FILL);
-        backgroundPaint.setColor(getContext().getColor(R.color.extra_light_blue_background));
+        backgroundPaint.setColor(ContextCompat.getColor(getContext(),R.color.extra_light_blue_background));
 
-        setBackgroundColor(getContext().getColor(android.R.color.transparent));
+        setBackgroundColor(ContextCompat.getColor(getContext(),android.R.color.transparent));
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.BRLinearLayoutWithCaret);
         final int N = a.getIndexCount();
         for (int i = 0; i < N; ++i) {

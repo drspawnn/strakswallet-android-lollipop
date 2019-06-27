@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Shader;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -84,9 +85,9 @@ public class BRLockScreenConstraintLayout extends ConstraintLayout {
             height = h;
             createTriangles(w, h);
 
-            trianglesPaint.setShader(new LinearGradient(0, 0, w, 0, getContext().getColor(R.color.logo_gradient_start),
-                    getContext().getColor(R.color.logo_gradient_end), Shader.TileMode.MIRROR));
-            trianglesPaintBlack.setShadowLayer(10.0f, 5f, 5f, getContext().getColor(R.color.gray_shadow));
+            trianglesPaint.setShader(new LinearGradient(0, 0, w, 0, ContextCompat.getColor(getContext(),R.color.logo_gradient_start),
+                    ContextCompat.getColor(getContext(),R.color.logo_gradient_end), Shader.TileMode.MIRROR));
+            trianglesPaintBlack.setShadowLayer(10.0f, 5f, 5f, ContextCompat.getColor(getContext(),R.color.gray_shadow));
 
             invalidate();
         }

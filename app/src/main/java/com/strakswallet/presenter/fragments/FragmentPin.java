@@ -1,11 +1,11 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,7 +95,7 @@ public class FragmentPin extends Fragment {
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getFragmentManager().beginTransaction().remove(FragmentPin.this).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(FragmentPin.this).commit();
             }
         });
 
@@ -211,10 +211,10 @@ public class FragmentPin extends Fragment {
                 }
                 authSucceeded = true;
                 completion.onComplete();
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 AuthManager.getInstance().authSuccess(app);
                 if (app != null)
-                    app.getFragmentManager().popBackStack();
+                    app.getSupportFragmentManager().popBackStack();
 
             }
         });
@@ -247,7 +247,7 @@ public class FragmentPin extends Fragment {
             @Override
             public void run() {
                 if (getActivity() != null)
-                    getActivity().getFragmentManager().beginTransaction().remove(FragmentPin.this).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(FragmentPin.this).commit();
             }
         }, 1000);
 
