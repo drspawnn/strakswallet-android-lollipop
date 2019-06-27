@@ -1,7 +1,7 @@
 package com.strakswallet.tools.manager;
 
-import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.strakswallet.R;
@@ -115,7 +115,7 @@ public class SendManager {
                     errMessage[0] = String.format(Locale.getDefault(), app.getString(R.string.PaymentProtocol_Errors_smallPayment),
                             BRConstants.symbolBits + new BigDecimal(minAmount).divide(new BigDecimal(100), BRConstants.ROUNDING_MODE));
                 } catch (SpendingNotAllowed spendingNotAllowed) {
-                    ((Activity) app).runOnUiThread(new Runnable() {
+                    ((AppCompatActivity) app).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             BRDialog.showCustomDialog(app, app.getString(R.string.Alert_error), app.getString(R.string.Send_isRescanning), app.getString(R.string.Button_ok), null, new BRDialogView.BROnClickListener() {
@@ -130,7 +130,7 @@ public class SendManager {
                 } catch (FeeNeedsAdjust feeNeedsAdjust) {
                     //offer to change amount, so it would be enough for fee
 //                    showFailed(app); //just show failed for now
-                    showAdjustFee((Activity) app, payment, walletManager);
+                    showAdjustFee((AppCompatActivity) app, payment, walletManager);
                     return;
                 } catch (FeeOutOfDate ex) {
                     //Fee is out of date, show not connected error
@@ -249,7 +249,7 @@ public class SendManager {
 
     }
 
-    private static void showAdjustFee(final Activity app, final CryptoRequest item, final BaseWalletManager walletManager) {
+    private static void showAdjustFee(final AppCompatActivity app, final CryptoRequest item, final BaseWalletManager walletManager) {
         BaseWalletManager wm = WalletsMaster.getInstance(app).getCurrentWallet(app);
         long maxAmountDouble = walletManager.getWallet().getMaxOutputAmount();
         if (maxAmountDouble == -1) {
@@ -332,7 +332,7 @@ public class SendManager {
             final String bitcoinMinMessage = String.format(Locale.getDefault(), ctx.getString(R.string.PaymentProtocol_Errors_smallTransaction),
                     CurrencyUtils.getFormattedAmount(ctx, walletManager.getIso(ctx), new BigDecimal(minOutput)));
 
-            ((Activity) ctx).runOnUiThread(new Runnable() {
+            ((AppCompatActivity) ctx).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     BRDialog.showCustomDialog(ctx, ctx.getString(R.string.Alerts_sendFailure), bitcoinMinMessage, ctx.getString(R.string.AccessibilityLabels_close), null, new BRDialogView.BROnClickListener() {
@@ -369,7 +369,7 @@ public class SendManager {
                         BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
                             @Override
                             public void run() {
-                                BRAnimator.killAllFragments((Activity) ctx);
+                                BRAnimator.killAllFragments((AppCompatActivity) ctx);
                             }
                         });
 

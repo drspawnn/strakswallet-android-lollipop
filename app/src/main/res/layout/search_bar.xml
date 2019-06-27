@@ -45,88 +45,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"/>
 
-        <LinearLayout
-            android:id="@+id/filter_buttons_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:clipChildren="false"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <com.strakswallet.presenter.customviews.BRButton
-                android:id="@+id/sent_filter"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:text="@string/Search.sent"
-                android:textColor="@color/light_gray"
-                android:textSize="@dimen/paragraph"
-                app:buttonType="2"
-                app:customBFont="CircularPro-Book.otf"
-                app:isBreadButton="true"/>
-
-            <com.strakswallet.presenter.customviews.BRButton
-                android:id="@+id/received_filter"
-                android:layout_width="85dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:text="@string/Search.received"
-                android:textColor="@color/light_gray"
-                android:textSize="@dimen/paragraph"
-                app:buttonType="2"
-                app:customBFont="CircularPro-Book.otf"
-                app:isBreadButton="true"/>
-
-            <com.strakswallet.presenter.customviews.BRButton
-                android:id="@+id/pending_filter"
-                android:layout_width="85dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:text="@string/Search.pending"
-                android:textColor="@color/light_gray"
-                android:textSize="@dimen/paragraph"
-                app:buttonType="2"
-                app:customBFont="CircularPro-Book.otf"
-                app:isBreadButton="true"/>
-
-            <com.strakswallet.presenter.customviews.BRButton
-                android:id="@+id/complete_filter"
-                android:layout_width="85dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:text="@string/Search.complete"
-                android:textColor="@color/light_gray"
-                android:textSize="@dimen/paragraph"
-                app:buttonType="2"
-                app:customBFont="CircularPro-Book.otf"
-                app:isBreadButton="true"/>
-
-        </LinearLayout>
 
         <com.strakswallet.presenter.customviews.BRButton
             android:id="@+id/cancel_button"
@@ -142,6 +60,101 @@
             app:layout_constraintBottom_toBottomOf="@+id/search_edit"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/search_edit"/>
+
+        <LinearLayout
+            android:id="@+id/filter_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginBottom="16dp"
+            android:clipChildren="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <com.strakswallet.presenter.customviews.BRButton
+                    android:id="@+id/sent_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/Search.sent"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/paragraph"
+                    app:buttonType="2"
+                    app:customBFont="CircularPro-Book.otf"
+                    app:isBreadButton="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <com.strakswallet.presenter.customviews.BRButton
+                    android:id="@+id/received_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/Search.received"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/paragraph"
+                    app:buttonType="2"
+                    app:customBFont="CircularPro-Book.otf"
+                    app:isBreadButton="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <com.strakswallet.presenter.customviews.BRButton
+                    android:id="@+id/pending_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/Search.pending"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/paragraph"
+                    app:buttonType="2"
+                    app:customBFont="CircularPro-Book.otf"
+                    app:isBreadButton="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <com.strakswallet.presenter.customviews.BRButton
+                    android:id="@+id/complete_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/Search.complete"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/paragraph"
+                    app:buttonType="2"
+                    app:customBFont="CircularPro-Book.otf"
+                    app:isBreadButton="true" />
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.Toolbar>

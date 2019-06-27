@@ -1,6 +1,5 @@
 package com.platform.middlewares.plugins;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 

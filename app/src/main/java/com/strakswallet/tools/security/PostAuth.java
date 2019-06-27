@@ -1,6 +1,6 @@
 package com.strakswallet.tools.security;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.NetworkOnMainThreadException;
@@ -79,7 +79,7 @@ public class PostAuth {
         return instance;
     }
 
-    public void onCreateWalletAuth(Activity app, boolean authAsked) {
+    public void onCreateWalletAuth(AppCompatActivity app, boolean authAsked) {
         Log.e(TAG, "onCreateWalletAuth: " + authAsked);
         long start = System.currentTimeMillis();
         boolean success = WalletsMaster.getInstance(app).generateRandomSeed(app);
@@ -97,7 +97,7 @@ public class PostAuth {
         }
     }
 
-    public void onPhraseCheckAuth(Activity app, boolean authAsked) {
+    public void onPhraseCheckAuth(AppCompatActivity app, boolean authAsked) {
         String cleanPhrase;
         try {
             byte[] raw = BRKeyStore.getPhrase(app, BRConstants.SHOW_PHRASE_REQUEST_CODE);
@@ -106,7 +106,7 @@ public class PostAuth {
                 return;
             }
             cleanPhrase = new String(raw);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             if (authAsked) {
                 Log.e(TAG, "onPhraseCheckAuth: WARNING!!!! LOOP");
                 isStuckWithAuthLoop = true;
@@ -119,11 +119,11 @@ public class PostAuth {
         app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.empty_300);
     }
 
-    public void onPhraseProveAuth(Activity app, boolean authAsked) {
+    public void onPhraseProveAuth(AppCompatActivity app, boolean authAsked) {
         String cleanPhrase;
         try {
             cleanPhrase = new String(BRKeyStore.getPhrase(app, BRConstants.PROVE_PHRASE_REQUEST));
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             if (authAsked) {
                 Log.e(TAG, "onPhraseProveAuth: WARNING!!!! LOOP");
                 isStuckWithAuthLoop = true;
@@ -136,11 +136,11 @@ public class PostAuth {
         app.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
     }
 
-    public void onBitIDAuth(Activity app, boolean authenticated) {
+    public void onBitIDAuth(AppCompatActivity app, boolean authenticated) {
         BRBitId.completeBitID(app, authenticated);
     }
 
-    public void onRecoverWalletAuth(Activity app, boolean authAsked) {
+    public void onRecoverWalletAuth(AppCompatActivity app, boolean authAsked) {
         if (Utils.isNullOrEmpty(phraseForKeyStore)) {
             Log.e(TAG, "onRecoverWalletAuth: phraseForKeyStore is null or empty");
             BRReportsManager.reportBug(new NullPointerException("onRecoverWalletAuth: phraseForKeyStore is or empty"));
@@ -153,7 +153,7 @@ public class PostAuth {
             try {
                 success = BRKeyStore.putPhrase(phraseForKeyStore.getBytes(),
                         app, BRConstants.PUT_PHRASE_RECOVERY_WALLET_REQUEST_CODE);
-            } catch (UserNotAuthenticatedException e) {
+            } catch (Exception e){//UserNotAuthenticatedException e) {
                 if (authAsked) {
                     Log.e(TAG, "onRecoverWalletAuth: WARNING!!!! LOOP");
                     isStuckWithAuthLoop = true;
@@ -201,7 +201,7 @@ public class PostAuth {
         byte[] rawPhrase;
         try {
             rawPhrase = BRKeyStore.getPhrase(app, BRConstants.PAY_REQUEST_CODE);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             if (authAsked) {
                 Log.e(TAG, "onPublishTxAuth: WARNING!!!! LOOP");
                 isStuckWithAuthLoop = true;
@@ -247,11 +247,11 @@ public class PostAuth {
     }
 
 
-    public void onPaymentProtocolRequest(final Activity app, boolean authAsked) {
+    public void onPaymentProtocolRequest(final AppCompatActivity app, boolean authAsked) {
         final byte[] rawSeed;
         try {
             rawSeed = BRKeyStore.getPhrase(app, BRConstants.PAYMENT_PROTOCOL_REQUEST_CODE);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             if (authAsked) {
                 Log.e(TAG, "onPaymentProtocolRequest: WARNING!!!! LOOP");
                 isStuckWithAuthLoop = true;
@@ -291,11 +291,11 @@ public class PostAuth {
         this.mPaymentProtocolTx = tx;
     }
 
-    public void onCanaryCheck(final Activity app, boolean authAsked) {
+    public void onCanaryCheck(final AppCompatActivity app, boolean authAsked) {
         String canary = null;
         try {
             canary = BRKeyStore.getCanary(app, BRConstants.CANARY_REQUEST_CODE);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             if (authAsked) {
                 Log.e(TAG, "onCanaryCheck: WARNING!!!! LOOP");
                 isStuckWithAuthLoop = true;
@@ -306,7 +306,7 @@ public class PostAuth {
             byte[] phrase;
             try {
                 phrase = BRKeyStore.getPhrase(app, BRConstants.CANARY_REQUEST_CODE);
-            } catch (UserNotAuthenticatedException e) {
+            } catch (Exception e){//UserNotAuthenticatedException e) {
                 if (authAsked) {
                     Log.e(TAG, "onCanaryCheck: WARNING!!!! LOOP");
                     isStuckWithAuthLoop = true;
@@ -323,7 +323,7 @@ public class PostAuth {
                 Log.e(TAG, "onCanaryCheck: Canary wasn't there, but the phrase persists, adding canary to keystore.");
                 try {
                     BRKeyStore.putCanary(BRConstants.CANARY_STRING, app, 0);
-                } catch (UserNotAuthenticatedException e) {
+                } catch (Exception e){//UserNotAuthenticatedException e) {
                     if (authAsked) {
                         Log.e(TAG, "onCanaryCheck: WARNING!!!! LOOP");
                         isStuckWithAuthLoop = true;

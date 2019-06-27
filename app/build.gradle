@@ -1,17 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.3'
+    compileSdkVersion = 27
+    buildToolsVersion = '28.0.3'
 
     defaultConfig {
         testInstrumentationRunner = 'android.support.test.runner.AndroidJUnitRunner'
         applicationId = 'com.strakswallet'
-        minSdkVersion 23
-        targetSdkVersion 26
-        versionCode 202
-        versionName "202"
+        minSdkVersion 21
+        maxSdkVersion 22
+        targetSdkVersion 22
+        versionCode 101
+        versionName "101"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+
         // Similar to other properties in the defaultConfig block,
         // you can configure the ndk block for each product flavor
         // in your build configuration.
@@ -87,22 +90,6 @@ android {
 
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def project = "STRAKSwallet"
-            def SEP = "-"
-            def flavor = variant.productFlavors[0].name
-            def buildType = variant.variantData.variantConfiguration.buildType.name
-            def version = variant.versionName
-            def date = new Date();
-            def formattedDate = date.format('yyyyMMdd')
-
-            def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
-
-            outputFileName = new File(newApkName)
-        }
-    }
-
     lintOptions {
         // set to true to turn off analysis progress reporting by lint
         quiet false
@@ -119,6 +106,8 @@ android {
     }
 
     buildTypes {
+//        gitUpdateModules()
+//        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         release {
             minifyEnabled = false
             debuggable = false
@@ -170,15 +159,17 @@ dependencies {
     implementation 'org.eclipse.jetty.websocket:websocket-server:9.2.19.v20160908'
     implementation 'org.eclipse.jetty:jetty-continuation:9.2.19.v20160908'
     implementation 'org.slf4j:slf4j-api:1.7.22'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:gridlayout-v7:26.1.0'
-    implementation 'com.android.support:support-v13:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:gridlayout-v7:27.1.1'
+    implementation 'com.android.support:support-v13:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    //implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.squareup.okhttp3:okhttp:3.7.0'
-    implementation 'com.google.firebase:firebase-core:11.8.0'
-    implementation 'com.google.firebase:firebase-crash:11.8.0'
+    implementation 'com.google.firebase:firebase-core:16+'
+    implementation 'com.google.firebase:firebase-crash:16+'
+    implementation 'com.google.android.gms:play-services-gcm:11.8.0'
     implementation 'io.sigpipe:jbsdiff:1.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'

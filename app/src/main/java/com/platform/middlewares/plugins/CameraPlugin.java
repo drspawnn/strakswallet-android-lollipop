@@ -1,7 +1,6 @@
 package com.platform.middlewares.plugins;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 
@@ -119,7 +119,7 @@ public class CameraPlugin implements Plugin {
                         Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED) {
                     // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(((Activity) app),
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(((AppCompatActivity) app),
                             Manifest.permission.CAMERA)) {
                         BRDialog.showCustomDialog(app, app.getString(R.string.Send_cameraUnavailabeTitle_android),
                                 app.getString(R.string.Send_cameraUnavailabeMessage_android),
@@ -131,7 +131,7 @@ public class CameraPlugin implements Plugin {
                                 }, null, null, 0);
                     } else {
                         // No explanation needed, we can request the permission.
-                        ActivityCompat.requestPermissions(((Activity) app),
+                        ActivityCompat.requestPermissions(((AppCompatActivity) app),
                                 new String[]{Manifest.permission.CAMERA},
                                 BRConstants.CAMERA_REQUEST_ID);
                         globalBaseRequest = null;
@@ -139,8 +139,8 @@ public class CameraPlugin implements Plugin {
                 } else {
                     // Permission is granted, open camera
                     Intent intent = new Intent(app, CameraActivity.class);
-                    ((Activity) app).startActivityForResult(intent, BRConstants.REQUEST_IMAGE_CAPTURE);
-                    ((Activity) app).overridePendingTransition(R.anim.fade_up, R.anim.fade_down);
+                    ((AppCompatActivity) app).startActivityForResult(intent, BRConstants.REQUEST_IMAGE_CAPTURE);
+                    ((AppCompatActivity) app).overridePendingTransition(R.anim.fade_up, R.anim.fade_down);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

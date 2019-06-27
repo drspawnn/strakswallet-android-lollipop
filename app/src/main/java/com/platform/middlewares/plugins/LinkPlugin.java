@@ -1,6 +1,6 @@
 package com.platform.middlewares.plugins;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -112,7 +112,7 @@ public class LinkPlugin implements Plugin {
                     Intent getInt = new Intent(app, WebViewActivity.class);
                     getInt.putExtra("url", getUri.toString());
                     app.startActivity(getInt);
-                    ((Activity)app).overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
+                    ((AppCompatActivity)app).overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
                     return BRHTTPHelper.handleSuccess(204, null, baseRequest, response, null);
                 case "POST":
                     // opens a browser with a customized request object
@@ -171,7 +171,7 @@ public class LinkPlugin implements Plugin {
                     Intent postInt = new Intent(app, WebViewActivity.class);
                     postInt.putExtra("json", json.toString());
                     app.startActivity(postInt);
-                    ((Activity)app).overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
+                    ((AppCompatActivity)app).overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
                     return BRHTTPHelper.handleSuccess(204, null, baseRequest, response, null);
 
             }

@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,6 +46,7 @@ public class SpendLimitActivity extends BRActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     public static SpendLimitActivity getApp() {
@@ -185,7 +186,7 @@ public class SpendLimitActivity extends BRActivity {
             final long limit = BRKeyStore.getSpendLimit(app);
             if (convertView == null) {
                 // inflate the layout
-                LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+                LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
                 convertView = inflater.inflate(layoutResourceId, parent, false);
             }
             // get the TextView and then set the text (item name) and tag (item ID) values

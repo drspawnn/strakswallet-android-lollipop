@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.strakswallet.R;
@@ -9,12 +9,13 @@ import com.strakswallet.R;
 /**
  * Used for Unit testing onlyg
  */
-public class TestActivity extends Activity {
+public class TestActivity extends AppCompatActivity {
     private static final String TAG = TestActivity.class.getName();
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

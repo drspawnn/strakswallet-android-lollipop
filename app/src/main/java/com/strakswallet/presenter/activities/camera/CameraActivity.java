@@ -1,11 +1,12 @@
 package com.strakswallet.presenter.activities.camera;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import android.support.annotation.NonNull;
 import android.support.v13.app.ActivityCompat;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -215,7 +217,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
             mCameraOpenCloseLock.release();
             cameraDevice.close();
             mCameraDevice = null;
-            Activity activity = CameraActivity.this;
+            AppCompatActivity activity = CameraActivity.this;
             if (null != activity) {
                 activity.finish();
             }
@@ -420,7 +422,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
 
     private void requestCameraPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-            new ConfirmationDialog().show(getFragmentManager(), FRAGMENT_DIALOG);
+            new ConfirmationDialog().show(getSupportFragmentManager(), FRAGMENT_DIALOG);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     REQUEST_CAMERA_PERMISSION);
@@ -433,7 +435,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 ErrorDialog.newInstance("This sample needs camera permission.")
-                        .show(getFragmentManager(), FRAGMENT_DIALOG);
+                        .show(getSupportFragmentManager(), FRAGMENT_DIALOG);
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -447,7 +449,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
      * @param height The height of available size for camera preview
      */
     private void setUpCameraOutputs(int width, int height) {
-        Activity activity = CameraActivity.this;
+        AppCompatActivity activity = CameraActivity.this;
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
             for (String cameraId : manager.getCameraIdList()) {
@@ -550,7 +552,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
             ErrorDialog.newInstance("This device doesn\'t support Camera2 API.")
-                    .show(getFragmentManager(), FRAGMENT_DIALOG);
+                    .show(getSupportFragmentManager(), FRAGMENT_DIALOG);
         }
     }
 
@@ -565,7 +567,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
         }
         setUpCameraOutputs(width, height);
         configureTransform(width, height);
-        Activity activity = CameraActivity.this;
+        AppCompatActivity activity = CameraActivity.this;
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
@@ -696,7 +698,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
      * @param viewHeight The height of `mTextureView`
      */
     private void configureTransform(int viewWidth, int viewHeight) {
-        Activity activity = CameraActivity.this;
+        AppCompatActivity activity = CameraActivity.this;
         if (null == mTextureView || null == mPreviewSize) {
             return;
         }
@@ -768,7 +770,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
      */
     private void captureStillPicture() {
         try {
-            final Activity activity = CameraActivity.this;
+            final AppCompatActivity activity = CameraActivity.this;
             if (null == mCameraDevice) {
                 return;
             }
@@ -940,7 +942,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
+            final FragmentActivity activity = getActivity();
             return new AlertDialog.Builder(activity)
                     .setMessage(getArguments().getString(ARG_MESSAGE))
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -967,7 +969,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            FragmentCompat.requestPermissions(parent,
+                            requestPermissions(
                                     new String[]{Manifest.permission.CAMERA},
                                     REQUEST_CAMERA_PERMISSION);
                         }
@@ -976,7 +978,7 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Activity activity = parent.getActivity();
+                                    FragmentActivity activity = parent.getActivity();
                                     if (activity != null) {
                                         activity.finish();
                                     }
@@ -1035,5 +1037,6 @@ public class CameraActivity extends BRActivity implements View.OnClickListener, 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

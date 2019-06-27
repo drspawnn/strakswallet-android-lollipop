@@ -1,10 +1,11 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,7 +76,7 @@ public class FragmentSupport extends Fragment {
         backgroundLayout = (LinearLayout) rootView.findViewById(R.id.background_layout);
         signalLayout = (CardView) rootView.findViewById(R.id.signal_layout);
 
-        signalLayout.setOnTouchListener(new SlideDetector(getContext(), signalLayout));
+        signalLayout.setOnTouchListener(new SlideDetector(getActivity().getBaseContext(), signalLayout));
 
         signalLayout.setLayoutTransition(BRAnimator.getDefaultTransition());
 
@@ -87,10 +88,10 @@ public class FragmentSupport extends Fragment {
                 Log.d(TAG, "shouldOverrideUrlLoading: " + request.getUrl());
                 Log.d(TAG, "shouldOverrideUrlLoading: " + request.getMethod());
                 if (onCloseUrl != null && request.getUrl().toString().equalsIgnoreCase(onCloseUrl)) {
-                    getActivity().getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                     onCloseUrl = null;
                 } else if (request.getUrl().toString().contains("_close")) {
-                    getActivity().getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 } else {
                     view.loadUrl(request.getUrl().toString());
                 }
@@ -154,13 +155,11 @@ public class FragmentSupport extends Fragment {
         BRAnimator.animateSignalSlide(signalLayout, true, new BRAnimator.OnSlideAnimationEnd() {
             @Override
             public void onAnimationEnd() {
-                if (getActivity() != null) {
+                FragmentActivity app = getActivity();
+                if (app != null)
                     try {
-                        getActivity().getFragmentManager().popBackStack();
-                    } catch (Exception ignored) {
-
-                    }
-                }
+                        app.getSupportFragmentManager().popBackStack();
+                    } catch (Exception ignored) { }
             }
         });
     }

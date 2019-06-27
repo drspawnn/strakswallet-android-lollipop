@@ -1,12 +1,12 @@
 package com.platform.middlewares.plugins;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.strakswallet.BreadApp;
@@ -151,7 +151,7 @@ public class GeoLocationPlugin implements Plugin {
                     if (ContextCompat.checkSelfPermission(app, Manifest.permission.ACCESS_FINE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED) {
                         Log.e(TAG, "handle: requesting permissions: " + target + " " + baseRequest.getMethod());
-                        ActivityCompat.requestPermissions((Activity) app, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, BRConstants.GEO_REQUEST_ID);
+                        ActivityCompat.requestPermissions((AppCompatActivity) app, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, BRConstants.GEO_REQUEST_ID);
                     }
                     BRSharedPrefs.putGeoPermissionsRequested(app, true);
                     continuation = ContinuationSupport.getContinuation(request);

@@ -1,15 +1,18 @@
 package com.strakswallet.tools.security;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -19,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.strakswallet.R;
-import com.strakswallet.presenter.activities.WalletActivity;
 import com.strakswallet.presenter.activities.intro.IntroActivity;
 import com.strakswallet.tools.exceptions.BRKeystoreErrorException;
 import com.strakswallet.presenter.customviews.BRDialogView;
@@ -44,14 +46,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -66,6 +77,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
+import javax.security.auth.x500.X500Principal;
 
 /**
  * BreadWallet
@@ -98,13 +110,13 @@ public class BRKeyStore {
     private static final String KEY_STORE_PREFS_NAME = "keyStorePrefs";
     public static final String ANDROID_KEY_STORE = "AndroidKeyStore";
 
-    public static final String CIPHER_ALGORITHM = "AES/CBC/PKCS7Padding";
-    public static final String PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7;
-    public static final String BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC;
+    public static final String CIPHER_ALGORITHM = "RSA/ECB/PKCS1Padding";
+    public static final String TRANSFORMATION = "RSA/ECB/PKCS1Padding";
+    public static final String PROVIDER = "AndroidOpenSSL";
 
-    public static final String NEW_CIPHER_ALGORITHM = "AES/GCM/NoPadding";
-    public static final String NEW_PADDING = KeyProperties.ENCRYPTION_PADDING_NONE;
-    public static final String NEW_BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM;
+    public static final String NEW_CIPHER_ALGORITHM = "RSA/ECB/NoPadding";
+    public static final String NEW_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
+    public static final String NEW_PROVIDER = "AndroidOpenSSL";
 
     public static Map<String, AliasObject> aliasObjectMap;
 
@@ -179,41 +191,51 @@ public class BRKeyStore {
         validateSet(data, alias, alias_file, alias_iv, auth_required);
 
         KeyStore keyStore = null;
+        RSAPublicKey publicKey;
+
         try {
             lock.lock();
             keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
             keyStore.load(null);
-            SecretKey secretKey = (SecretKey) keyStore.getKey(alias, null);
-            Cipher inCipher = Cipher.getInstance(NEW_CIPHER_ALGORITHM);
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
+            try{publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();}catch (Exception e){publicKey=null;}
+            Cipher inCipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
 
-            if (secretKey == null) {
+            SecureRandom sr = new SecureRandom();
+            byte [] iv = new byte[1024];
+            sr.nextBytes(iv);
+            //IvParameterSpec IV=new IvParameterSpec(iv);
+
+            if (publicKey == null) {
                 //create key if not present
-                secretKey = createKeys(alias, auth_required);
-                inCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                KeyPair keyPair = createKeys(alias, auth_required,context);
+                publicKey = (RSAPublicKey) keyPair.getPublic();
+                inCipher.init(Cipher.ENCRYPT_MODE, publicKey,sr);
             } else {
                 //see if the key is old format, create a new one if it is
                 try {
-                    inCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                    inCipher.init(Cipher.ENCRYPT_MODE, publicKey,sr);
                 } catch (InvalidKeyException ignored) {
-                    if (ignored instanceof UserNotAuthenticatedException) {
-                        throw ignored;
-                    }
+//                    if (ignored instanceof UserNotAuthenticatedException) {
+//                        throw ignored;
+//                    }
                     Log.e(TAG, "_setData: OLD KEY PRESENT: " + alias);
                     //create new key and reinitialize the cipher
-                    secretKey = createKeys(alias, auth_required);
-                    inCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                    KeyPair keyPair = createKeys(alias, auth_required,context);
+                    publicKey = (RSAPublicKey) keyPair.getPublic();
+                    inCipher.init(Cipher.ENCRYPT_MODE, publicKey,sr);
                 }
             }
 
             //the key cannot still be null
-            if (secretKey == null) {
+            if (publicKey == null) {
                 BRKeystoreErrorException ex = new BRKeystoreErrorException("secret is null on _setData: " + alias);
                 BRReportsManager.reportBug(ex);
                 return false;
             }
 
 
-            byte[] iv = inCipher.getIV();
+            //byte[] ivs = inCipher.getIV();
             if (iv == null) throw new NullPointerException("iv is null!");
 
             //store the iv
@@ -222,15 +244,15 @@ public class BRKeyStore {
             //store the encrypted data
             storeEncryptedData(context, encryptedData, alias);
             return true;
-        } catch (UserNotAuthenticatedException e) {
-            Log.e(TAG, "_setData: showAuthenticationScreen: " + alias);
-            showAuthenticationScreen(context, request_code, alias);
-            throw e;
+//        } catch (UserNotAuthenticatedException e) {
+//            Log.e(TAG, "_setData: showAuthenticationScreen: " + alias);
+//            showAuthenticationScreen(context, request_code, alias);
+//            throw e;
         } catch (InvalidKeyException ex) {
-            if (ex instanceof KeyPermanentlyInvalidatedException) {
-                showKeyInvalidated(context);
-                throw new UserNotAuthenticatedException(); //just to make the flow stop
-            }
+//            if (ex instanceof KeyPermanentlyInvalidatedException) {
+//                showKeyInvalidated(context);
+//                throw new UserNotAuthenticatedException(); //just to make the flow stop
+//            }
 
             BRReportsManager.reportBug(ex);
             return false;
@@ -243,47 +265,54 @@ public class BRKeyStore {
         }
     }
 
-    private static SecretKey createKeys(String alias, boolean auth_required) throws InvalidAlgorithmParameterException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
+    private static KeyPair createKeys(String alias, boolean auth_required, Context context) throws InvalidAlgorithmParameterException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException {
 
-        // Set the alias of the entry in Android KeyStore where the key will appear
-        // and the constrains (purposes) in the constructor of the Builder
-        keyGenerator.init(new KeyGenParameterSpec.Builder(alias,
-                KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                .setBlockModes(NEW_BLOCK_MODE)
-                .setUserAuthenticationRequired(auth_required)
-                .setUserAuthenticationValidityDurationSeconds(AUTH_DURATION_SEC)
-                .setRandomizedEncryptionRequired(false)
-                .setEncryptionPaddings(NEW_PADDING)
-                .build());
-        return keyGenerator.generateKey();
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        end.add(Calendar.YEAR, 100);
+        KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
+                .setAlias(alias)
+                .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                .setSerialNumber(BigInteger.ONE)
+                .setStartDate(start.getTime())
+                .setEndDate(end.getTime())
+                .setEncryptionRequired()
+                .build();
+        KeyPairGenerator generator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE);
+        generator.initialize(spec);//*/
 
+        KeyPair keyPair = generator.generateKeyPair();
+
+        return keyPair;
     }
 
     private synchronized static byte[] _getData(final Context context, String alias, String alias_file, String alias_iv, int request_code)
             throws UserNotAuthenticatedException {
         validateGet(alias, alias_file, alias_iv);//validate entries
         KeyStore keyStore = null;
+        RSAPrivateKey privateKey = null;
 
         try {
             lock.lock();
             keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
             keyStore.load(null);
-            SecretKey secretKey = (SecretKey) keyStore.getKey(alias, null);
-
+            if (!keyStore.containsAlias(alias)) Log.i(TAG,"_getData  Keystore ("+alias+") not found");
+            else {
+                Log.i(TAG, "_getData  Keystore (" + alias + ") found");
+                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
+                privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
+            }
             byte[] encryptedData = retrieveEncryptedData(context, alias);
             if (encryptedData != null) {
                 //new format data is present, good
-                byte[] iv = retrieveEncryptedData(context, alias_iv);
-                if (iv == null)
-                    throw new NullPointerException("iv is missing when data isn't: " + alias);
+                Log.i(TAG,"encryptedData not null");
                 Cipher outCipher;
-
-                outCipher = Cipher.getInstance(NEW_CIPHER_ALGORITHM);
-                outCipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, iv));
+                outCipher = Cipher.getInstance(NEW_TRANSFORMATION, NEW_PROVIDER);
+                outCipher.init(Cipher.DECRYPT_MODE, privateKey);
                 try {
                     byte[] decryptedData = outCipher.doFinal(encryptedData);
                     if (decryptedData != null) {
+                        Log.i(TAG,"decryptedData ("+alias+") = " +Base64.encodeToString(decryptedData, Base64.DEFAULT));
                         return decryptedData;
                     }
                 } catch (IllegalBlockSizeException | BadPaddingException e) {
@@ -294,8 +323,9 @@ public class BRKeyStore {
             //no new format data, get the old one and migrate it to the new format
             String encryptedDataFilePath = getFilePath(alias_file, context);
 
-            if (secretKey == null) {
+            if (privateKey == null) {
                 /* no such key, the key is just simply not there */
+                Log.i(TAG,"privateKey NULL ");
                 boolean fileExists = new File(encryptedDataFilePath).exists();
 //                Log.e(TAG, "_getData: " + alias + " file exist: " + fileExists);
                 if (!fileExists) {
@@ -308,6 +338,7 @@ public class BRKeyStore {
 
             boolean ivExists = new File(getFilePath(alias_iv, context)).exists();
             boolean aliasExists = new File(getFilePath(alias_file, context)).exists();
+
             //cannot happen, they all should be present
             if (!ivExists || !aliasExists) {
                 removeAliasAndDatas(keyStore, alias, context);
@@ -326,20 +357,23 @@ public class BRKeyStore {
             byte[] iv = readBytesFromFile(getFilePath(alias_iv, context));
             if (Utils.isNullOrEmpty(iv))
                 throw new RuntimeException("iv is missing for " + alias);
+            Log.i(TAG,"decryptedDataIV ("+alias_iv+") = " +Base64.encodeToString(iv, Base64.DEFAULT));
             Cipher outCipher = Cipher.getInstance(CIPHER_ALGORITHM);
-            outCipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
+            outCipher.init(Cipher.DECRYPT_MODE, privateKey, new IvParameterSpec(iv));
             CipherInputStream cipherInputStream = new CipherInputStream(new FileInputStream(encryptedDataFilePath), outCipher);
             byte[] result = BytesUtil.readBytesFromStream(cipherInputStream);
             if (result == null)
                 throw new RuntimeException("Failed to read bytes from CipherInputStream for alias " + alias);
 
             //create the new format key
-            SecretKey newKey = createKeys(alias, (alias.equals(PHRASE_ALIAS) || alias.equals(CANARY_ALIAS)));
-            if (newKey == null)
+            KeyPair keyPair = createKeys(alias, (alias.equals(PHRASE_ALIAS) || alias.equals(CANARY_ALIAS)),context);
+            if (keyPair == null)
                 throw new RuntimeException("Failed to create new key for alias " + alias);
+
             Cipher inCipher = Cipher.getInstance(NEW_CIPHER_ALGORITHM);
+            privateKey = (RSAPrivateKey) keyPair.getPrivate();
             //init the cipher
-            inCipher.init(Cipher.ENCRYPT_MODE, newKey);
+            inCipher.init(Cipher.ENCRYPT_MODE, privateKey);
             iv = inCipher.getIV();
             //store the new iv
             storeEncryptedData(context, iv, alias_iv);
@@ -350,18 +384,19 @@ public class BRKeyStore {
             return result;
 
         } catch (InvalidKeyException e) {
-            if (e instanceof UserNotAuthenticatedException) {
-                /** user not authenticated, ask the system for authentication */
-                Log.e(TAG, "_getData: showAuthenticationScreen: " + alias);
-                showAuthenticationScreen(context, request_code, alias);
-                throw (UserNotAuthenticatedException) e;
-            } else {
-                Log.e(TAG, "_getData: InvalidKeyException", e);
-                BRReportsManager.reportBug(e);
-                if (e instanceof KeyPermanentlyInvalidatedException)
-                    showKeyInvalidated(context);
-                throw new UserNotAuthenticatedException(); //just to not go any further
-            }
+            throw new RuntimeException(e.getMessage());
+//            if (e instanceof UserNotAuthenticatedException) {
+//                /** user not authenticated, ask the system for authentication */
+//                Log.e(TAG, "_getData: showAuthenticationScreen: " + alias);
+//                showAuthenticationScreen(context, request_code, alias);
+//                throw (UserNotAuthenticatedException) e;
+//            } else {
+//                Log.e(TAG, "_getData: InvalidKeyException", e);
+//                BRReportsManager.reportBug(e);
+//                if (e instanceof KeyPermanentlyInvalidatedException)
+//                    showKeyInvalidated(context);
+//                throw new UserNotAuthenticatedException(); //just to not go any further
+//            }
         } catch (IOException | CertificateException | KeyStoreException e) {
             /** keyStore.load(null) threw the Exception, meaning the keystore is unavailable */
             Log.e(TAG, "_getData: keyStore.load(null) threw the Exception, meaning the keystore is unavailable", e);
@@ -383,6 +418,12 @@ public class BRKeyStore {
             BRReportsManager.reportBug(e);
             throw new RuntimeException(e.getMessage());
         } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } catch (UnrecoverableEntryException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }catch (NullPointerException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         } finally {
@@ -436,19 +477,19 @@ public class BRKeyStore {
     }
 
     public synchronized static boolean putPhrase(byte[] strToStore, Context context, int requestCode) throws UserNotAuthenticatedException {
-        if (PostAuth.isStuckWithAuthLoop) {
-            showLoopBugMessage(context);
-            throw new UserNotAuthenticatedException();
-        }
+//        if (PostAuth.isStuckWithAuthLoop) {
+//            showLoopBugMessage(context);
+//            throw new UserNotAuthenticatedException();
+//        }
         AliasObject obj = aliasObjectMap.get(PHRASE_ALIAS);
         return !(strToStore == null || strToStore.length == 0) && _setData(context, strToStore, obj.alias, obj.datafileName, obj.ivFileName, requestCode, true);
     }
 
     public synchronized static byte[] getPhrase(final Context context, int requestCode) throws UserNotAuthenticatedException {
-        if (PostAuth.isStuckWithAuthLoop) {
-            showLoopBugMessage(context);
-            throw new UserNotAuthenticatedException();
-        }
+//        if (PostAuth.isStuckWithAuthLoop) {
+//            showLoopBugMessage(context);
+//            throw new UserNotAuthenticatedException();
+//        }
         AliasObject obj = aliasObjectMap.get(PHRASE_ALIAS);
         return _getData(context, obj.alias, obj.datafileName, obj.ivFileName, requestCode);
     }
@@ -456,7 +497,7 @@ public class BRKeyStore {
     public synchronized static boolean putCanary(String strToStore, Context context, int requestCode) throws UserNotAuthenticatedException {
         if (PostAuth.isStuckWithAuthLoop) {
             showLoopBugMessage(context);
-            throw new UserNotAuthenticatedException();
+//            throw new UserNotAuthenticatedException();
         }
         if (strToStore == null || strToStore.isEmpty()) return false;
         AliasObject obj = aliasObjectMap.get(CANARY_ALIAS);
@@ -470,10 +511,10 @@ public class BRKeyStore {
     }
 
     public synchronized static String getCanary(final Context context, int requestCode) throws UserNotAuthenticatedException {
-        if (PostAuth.isStuckWithAuthLoop) {
-            showLoopBugMessage(context);
-            throw new UserNotAuthenticatedException();
-        }
+//        if (PostAuth.isStuckWithAuthLoop) {
+//            showLoopBugMessage(context);
+//            throw new UserNotAuthenticatedException();
+//        }
         AliasObject obj = aliasObjectMap.get(CANARY_ALIAS);
         byte[] data;
         data = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, requestCode);
@@ -490,7 +531,7 @@ public class BRKeyStore {
         AliasObject obj = aliasObjectMap.get(PUB_KEY_ALIAS);
         try {
             return masterPubKey != null && masterPubKey.length != 0 && _setData(context, masterPubKey, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -500,7 +541,7 @@ public class BRKeyStore {
         AliasObject obj = aliasObjectMap.get(PUB_KEY_ALIAS);
         try {
             return _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return null;
@@ -510,7 +551,7 @@ public class BRKeyStore {
         AliasObject obj = aliasObjectMap.get(AUTH_KEY_ALIAS);
         try {
             return authKey != null && authKey.length != 0 && _setData(context, authKey, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -520,7 +561,7 @@ public class BRKeyStore {
         AliasObject obj = aliasObjectMap.get(AUTH_KEY_ALIAS);
         try {
             return _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return null;
@@ -530,7 +571,7 @@ public class BRKeyStore {
         AliasObject obj = aliasObjectMap.get(TOKEN_ALIAS);
         try {
             return token != null && token.length != 0 && _setData(context, token, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -540,7 +581,7 @@ public class BRKeyStore {
         AliasObject obj = aliasObjectMap.get(TOKEN_ALIAS);
         try {
             return _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return null;
@@ -551,7 +592,7 @@ public class BRKeyStore {
         byte[] bytesToStore = TypesConverter.intToBytes(creationTime);
         try {
             return bytesToStore.length != 0 && _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -562,7 +603,7 @@ public class BRKeyStore {
         byte[] result = null;
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         if (Utils.isNullOrEmpty(result)) {
@@ -584,7 +625,7 @@ public class BRKeyStore {
         byte[] bytesToStore = pinCode.getBytes();
         try {
             return _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -595,7 +636,7 @@ public class BRKeyStore {
         byte[] result = null;
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         String pinCode = result == null ? "" : new String(result);
@@ -627,7 +668,7 @@ public class BRKeyStore {
         byte[] bytesToStore = TypesConverter.intToBytes(failCount);
         try {
             return bytesToStore.length != 0 && _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -638,7 +679,7 @@ public class BRKeyStore {
         byte[] result = null;
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
 
@@ -650,7 +691,7 @@ public class BRKeyStore {
         byte[] bytesToStore = TypesConverter.long2byteArray(spendLimit);
         try {
             return bytesToStore.length != 0 && _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -661,7 +702,7 @@ public class BRKeyStore {
         byte[] result = null;
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
 
@@ -673,7 +714,7 @@ public class BRKeyStore {
         byte[] bytesToStore = TypesConverter.long2byteArray(spendLimit);
         try {
             return bytesToStore.length != 0 && _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -684,7 +725,7 @@ public class BRKeyStore {
         byte[] result = null;
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
 
@@ -696,7 +737,7 @@ public class BRKeyStore {
         byte[] bytesToStore = TypesConverter.long2byteArray(time);
         try {
             return bytesToStore.length != 0 && _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -708,7 +749,7 @@ public class BRKeyStore {
         byte[] bytesToStore = TypesConverter.long2byteArray(totalLimit);
         try {
             return bytesToStore.length != 0 && _setData(context, bytesToStore, obj.alias, obj.datafileName, obj.ivFileName, 0, false);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return false;
@@ -721,7 +762,7 @@ public class BRKeyStore {
         byte[] result = new byte[0];
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return (result != null && result.length > 0) ? TypesConverter.byteArray2long(result) : 0;
@@ -732,7 +773,7 @@ public class BRKeyStore {
         byte[] result = null;
         try {
             result = _getData(context, obj.alias, obj.datafileName, obj.ivFileName, 0);
-        } catch (UserNotAuthenticatedException e) {
+        } catch (Exception e){//UserNotAuthenticatedException e) {
             e.printStackTrace();
         }
         return result != null && result.length > 0 ? TypesConverter.byteArray2long(result) : 0;
@@ -804,9 +845,11 @@ public class BRKeyStore {
     }
 
     public static byte[] retrieveEncryptedData(Context ctx, String name) {
+        Log.i(TAG,"retrieveEncryptedData START Name= "+name);
         SharedPreferences pref = ctx.getSharedPreferences(KEY_STORE_PREFS_NAME, Context.MODE_PRIVATE);
         String base64 = pref.getString(name, null);
         if (base64 == null) return null;
+        Log.i(TAG,"retrieveEncryptedData END  Name= "+name+" Data= " +base64);
         return Base64.decode(base64, Base64.DEFAULT);
     }
 
@@ -817,8 +860,8 @@ public class BRKeyStore {
             BRReportsManager.reportBug(new IllegalArgumentException("requesting auth for: " + alias), true);
         }
 //        Log.e(TAG, "showAuthenticationScreen: " + alias);
-        if (context instanceof Activity) {
-            Activity app = (Activity) context;
+        if (context instanceof AppCompatActivity) {
+            AppCompatActivity app = (AppCompatActivity) context;
             KeyguardManager mKeyguardManager = (KeyguardManager) app.getSystemService(Context.KEYGUARD_SERVICE);
             if (mKeyguardManager == null) {
                 NullPointerException ex = new NullPointerException("KeyguardManager is null in showAuthenticationScreen");
@@ -876,33 +919,35 @@ public class BRKeyStore {
             keyStore.load(null);
             // Create the keys if necessary
             if (!keyStore.containsAlias(alias)) {
-                KeyGenerator keyGenerator = KeyGenerator.getInstance(
-                        KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
+                Calendar start = Calendar.getInstance();
+                Calendar end = Calendar.getInstance();
+                end.add(Calendar.YEAR, 100);
+                KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
+                        .setAlias(alias)
+                        .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                        .setSerialNumber(BigInteger.ONE)
+                        .setStartDate(start.getTime())
+                        .setEndDate(end.getTime())
+                        .setEncryptionRequired()
+                        .build();
+                KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+                generator.initialize(spec);//*/
 
-                // Set the alias of the entry in Android KeyStore where the key will appear
-                // and the constrains (purposes) in the constructor of the Builder
-                keyGenerator.init(new KeyGenParameterSpec.Builder(alias,
-                        KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setBlockModes(BLOCK_MODE)
-                        .setKeySize(256)
-                        .setUserAuthenticationRequired(auth_required)
-                        .setUserAuthenticationValidityDurationSeconds(AUTH_DURATION_SEC)
-                        .setRandomizedEncryptionRequired(true)
-                        .setEncryptionPaddings(PADDING)
-                        .build());
-                SecretKey key = keyGenerator.generateKey();
+
+                KeyPair keyPair = generator.generateKeyPair();
 
             }
 
             String encryptedDataFilePath = getFilePath(alias_file, context);
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
+            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
 
-            SecretKey secret = (SecretKey) keyStore.getKey(alias, null);
-            if (secret == null) {
+            if (publicKey == null) {
                 Log.e(TAG, "_setOldData: " + "secret is null on _setData: " + alias);
                 return false;
             }
-            Cipher inCipher = Cipher.getInstance(CIPHER_ALGORITHM);
-            inCipher.init(Cipher.ENCRYPT_MODE, secret);
+            Cipher inCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            inCipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] iv = inCipher.getIV();
             String path = getFilePath(alias_iv, context);
             boolean success = writeBytesToFile(path, iv);
@@ -929,10 +974,10 @@ public class BRKeyStore {
                 if (cipherOutputStream != null) cipherOutputStream.close();
             }
             return true;
-        } catch (UserNotAuthenticatedException e) {
-            Log.e(TAG, "_setOldData: showAuthenticationScreen: " + alias);
-            showAuthenticationScreen(context, request_code, alias);
-            throw e;
+//        } catch (UserNotAuthenticatedException e) {
+//            Log.e(TAG, "_setOldData: showAuthenticationScreen: " + alias);
+//            showAuthenticationScreen(context, request_code, alias);
+//            throw e;
         } catch (Exception e) {
             Log.e(TAG, "_setOldData: ", e);
             return false;
@@ -992,15 +1037,15 @@ public class BRKeyStore {
             CipherInputStream cipherInputStream = new CipherInputStream(new FileInputStream(encryptedDataFilePath), outCipher);
             return BytesUtil.readBytesFromStream(cipherInputStream);
         } catch (InvalidKeyException e) {
-            if (e instanceof UserNotAuthenticatedException) {
-                /** user not authenticated, ask the system for authentication */
-                Log.e(TAG, "_getOldData: showAuthenticationScreen: " + alias);
-                showAuthenticationScreen(context, request_code, alias);
-                throw (UserNotAuthenticatedException) e;
-            } else {
+//            if (e instanceof UserNotAuthenticatedException) {
+//                /** user not authenticated, ask the system for authentication */
+//                Log.e(TAG, "_getOldData: showAuthenticationScreen: " + alias);
+//                showAuthenticationScreen(context, request_code, alias);
+//                throw (UserNotAuthenticatedException) e;
+//            } else {
                 Log.e(TAG, "_getOldData: InvalidKeyException", e);
                 return null;
-            }
+//            }
         } catch (IOException | CertificateException | KeyStoreException e) {
             /** keyStore.load(null) threw the Exception, meaning the keystore is unavailable */
             Log.e(TAG, "_getOldData: keyStore.load(null) threw the Exception, meaning the keystore is unavailable", e);
@@ -1028,7 +1073,7 @@ public class BRKeyStore {
                     @Override
                     public void run() {
                         BRDialog.hideDialog();
-                        BRAnimator.showSupportFragment((Activity) app, BRConstants.loopBug);
+                        BRAnimator.showSupportFragment((AppCompatActivity) app, BRConstants.loopBug);
                     }
                 });
 
@@ -1045,7 +1090,7 @@ public class BRKeyStore {
                 new BRDialogView.BROnClickListener() {
                     @Override
                     public void onClick(BRDialogView brDialogView) {
-                        if (app instanceof Activity) ((Activity) app).finish();
+                        if (app instanceof AppCompatActivity) ((AppCompatActivity) app).finish();
                     }
                 }, null, new DialogInterface.OnDismissListener() {
                     @Override

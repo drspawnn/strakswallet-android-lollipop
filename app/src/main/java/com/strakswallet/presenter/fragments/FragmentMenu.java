@@ -1,7 +1,6 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +8,8 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,7 @@ public class FragmentMenu extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), WebViewActivity.class);
                     intent.putExtra("url", HTTPServer.URL_BUY);
-                    Activity app = getActivity();
+                    FragmentActivity app = getActivity();
                     app.startActivity(intent);
                     app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
 
@@ -107,7 +108,7 @@ public class FragmentMenu extends Fragment {
         itemList.add(new BRMenuItem(getString(R.string.MenuButton_security), R.drawable.ic_shield, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 Intent intent = new Intent(app, SecurityCenterActivity.class);
                 app.startActivity(intent);
                 app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
@@ -117,14 +118,14 @@ public class FragmentMenu extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                BRAnimator.showSupportFragment(getActivity(), null);
+                BRAnimator.showSupportFragment((AppCompatActivity)getActivity(), null);
             }
         }));
         itemList.add(new BRMenuItem(getString(R.string.MenuButton_settings), R.drawable.ic_settings, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 app.startActivity(intent);
                 app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
             }
@@ -132,8 +133,8 @@ public class FragmentMenu extends Fragment {
         itemList.add(new BRMenuItem(getString(R.string.MenuButton_lock), R.drawable.ic_lock, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Activity from = getActivity();
-                from.getFragmentManager().popBackStack();
+                final FragmentActivity from = getActivity();
+                from.getSupportFragmentManager().popBackStack();
                 BRAnimator.startBreadActivity(from, true);
             }
         }));
@@ -141,9 +142,9 @@ public class FragmentMenu extends Fragment {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app != null)
-                    app.getFragmentManager().popBackStack();
+                    app.getSupportFragmentManager().popBackStack();
             }
         });
         mTitle = rootView.findViewById(R.id.title);
@@ -186,7 +187,7 @@ public class FragmentMenu extends Fragment {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             if (convertView == null) {
                 // inflate the background
-                LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+                LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
                 convertView = inflater.inflate(defaultLayoutResource, parent, false);
             }
             TextView text = (TextView) convertView.findViewById(R.id.item_text);
@@ -213,8 +214,9 @@ public class FragmentMenu extends Fragment {
         BRAnimator.animateSignalSlide(signalLayout, true, new BRAnimator.OnSlideAnimationEnd() {
             @Override
             public void onAnimationEnd() {
-                if (getActivity() != null)
-                    getActivity().getFragmentManager().popBackStack();
+                final FragmentActivity app = getActivity();
+                if (app != null)
+                    app.getSupportFragmentManager().popBackStack();
             }
         });
 

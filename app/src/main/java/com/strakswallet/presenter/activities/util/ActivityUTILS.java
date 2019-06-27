@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities.util;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Looper;
@@ -46,7 +46,7 @@ public class ActivityUTILS {
 
     private static final String TAG = ActivityUTILS.class.getName();
 
-    private static void setStatusBarColor(Activity app, int color) {
+    private static void setStatusBarColor(AppCompatActivity app, int color) {
         if (app == null) return;
         Window window = app.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -56,11 +56,11 @@ public class ActivityUTILS {
 
 
     //return true if the app does need to show the disabled wallet screen
-    public static boolean isAppSafe(Activity app) {
+    public static boolean isAppSafe(AppCompatActivity app) {
         return app instanceof SetPinActivity || app instanceof InputWordsActivity;
     }
 
-    public static void showWalletDisabled(Activity app) {
+    public static void showWalletDisabled(AppCompatActivity app) {
         Intent intent = new Intent(app, DisabledActivity.class);
         app.startActivity(intent);
         app.overridePendingTransition(R.anim.fade_up, R.anim.fade_down);
@@ -68,7 +68,7 @@ public class ActivityUTILS {
 
     }
 
-    public static boolean isLast(Activity app) {
+    public static boolean isLast(AppCompatActivity app) {
         ActivityManager mngr = (ActivityManager) app.getSystemService(ACTIVITY_SERVICE);
 
         List<ActivityManager.RunningTaskInfo> taskList = mngr.getRunningTasks(10);

@@ -1,6 +1,7 @@
 package com.strakswallet.wallet;
 
 import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -97,7 +98,7 @@ public class WalletTests {
 
     @Test
     public void paymentRequestTest() throws InvalidAlgorithmParameterException {
-        Activity app = mActivityRule.getActivity();
+        AppCompatActivity app = mActivityRule.getActivity();
         CryptoRequest obj = CryptoUriParser.parseRequest(app, "n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi");
         assertEquals("n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi", obj.address);
 
@@ -179,7 +180,7 @@ public class WalletTests {
 
     @Test
     public void walletBitcoinTests() {
-        Activity app = mActivityRule.getActivity();
+        AppCompatActivity app = mActivityRule.getActivity();
 
 
         WalletBitcoinManager wallet = WalletBitcoinManager.getInstance(app);

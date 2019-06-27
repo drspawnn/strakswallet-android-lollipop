@@ -56,10 +56,10 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
-        android:progressBackgroundTint="#552196f3"
-        android:progressDrawable="@drawable/wallet_sync_progress_bar"
-        android:progressTint="#4b77f3"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:progressBackgroundTint="@color/progressBackgroundTint"
+        android:progressDrawable="@drawable/wallet_tx_progress_bar"
+        android:progressTint="@color/progressTint" />
 
     <Button
         android:id="@+id/tx_failed_button"

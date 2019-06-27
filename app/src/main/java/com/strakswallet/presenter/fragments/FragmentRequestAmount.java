@@ -1,11 +1,12 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,13 +134,13 @@ public class FragmentRequestAmount extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app == null) {
                     Log.e(TAG, "onClick: app is null, can't start the webview with url: " + URL_SUPPORT);
                     return;
                 }
 
-                BRAnimator.showSupportFragment(app, BRConstants.requestAmount);
+                BRAnimator.showSupportFragment((AppCompatActivity)app, BRConstants.requestAmount);
             }
         });
 
@@ -183,9 +184,9 @@ public class FragmentRequestAmount extends Fragment {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app != null)
-                    app.getFragmentManager().popBackStack();
+                    app.getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -339,13 +340,12 @@ public class FragmentRequestAmount extends Fragment {
         BRAnimator.animateSignalSlide(signalLayout, true, new BRAnimator.OnSlideAnimationEnd() {
             @Override
             public void onAnimationEnd() {
-                if (getActivity() != null) {
+                FragmentActivity app = getActivity();
+                if (app != null)
                     try {
-                        getActivity().getFragmentManager().popBackStack();
-                    } catch (Exception ignored) {
+                        app.getSupportFragmentManager().popBackStack();
+                    } catch (Exception ignored) {}
 
-                    }
-                }
             }
         });
     }

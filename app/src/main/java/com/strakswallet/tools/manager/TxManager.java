@@ -1,6 +1,6 @@
 package com.strakswallet.tools.manager;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.WorkerThread;
@@ -86,7 +86,7 @@ public class TxManager {
     private TxManager() {
     }
 
-    public void onResume(final Activity app) {
+    public void onResume(final AppCompatActivity app) {
         crashIfNotMain();
 
     }
@@ -102,7 +102,7 @@ public class TxManager {
         if (took > 500)
             Log.e(TAG, "updateTxList: took: " + took);
         if (adapter != null) {
-            ((Activity) app).runOnUiThread(new Runnable() {
+            ((AppCompatActivity) app).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     adapter.setItems(items);

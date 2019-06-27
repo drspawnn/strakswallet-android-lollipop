@@ -1,9 +1,11 @@
 package com.strakswallet.presenter.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.test.espresso.remote.EspressoRemoteMessage;
+import android.support.v4.app.Fragment;
 import android.content.res.Configuration;
-import android.hardware.fingerprint.FingerprintManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.transition.AutoTransition;
 import android.support.transition.TransitionManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.strakswallet.BuildConfig;
 import com.strakswallet.R;
@@ -152,15 +156,15 @@ public class FragmentSend extends Fragment {
         economy = (BRButton) rootView.findViewById(R.id.right_button);
         close = (ImageButton) rootView.findViewById(R.id.close_button);
         BaseWalletManager wm = WalletsMaster.getInstance(getActivity()).getCurrentWallet(getActivity());
-        selectedIso = BRSharedPrefs.isCryptoPreferred(getActivity()) ? wm.getIso(getActivity()) : BRSharedPrefs.getPreferredFiatIso(getContext());
+        selectedIso = BRSharedPrefs.isCryptoPreferred(getActivity()) ? wm.getIso(getActivity()) : BRSharedPrefs.getPreferredFiatIso(getActivity().getBaseContext());
 
         amountBuilder = new StringBuilder(0);
         setListeners();
         isoText.setText(getString(R.string.Send_amountLabel));
         isoText.setTextSize(18);
-        isoText.setTextColor(getContext().getColor(R.color.light_gray));
+        isoText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.light_gray));
         isoText.requestLayout();
-        signalLayout.setOnTouchListener(new SlideDetector(getContext(), signalLayout));
+        signalLayout.setOnTouchListener(new SlideDetector(getActivity().getBaseContext(), signalLayout));
 
         signalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,12 +190,12 @@ public class FragmentSend extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!BRAnimator.isClickAllowed()) return;
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app == null) {
                     Log.e(TAG, "onClick: app is null, can't start the webview with url: " + URL_SUPPORT);
                     return;
                 }
-                BRAnimator.showSupportFragment(app, BRConstants.send);
+                BRAnimator.showSupportFragment((AppCompatActivity)app, BRConstants.send);
             }
         });
 
@@ -215,7 +219,7 @@ public class FragmentSend extends Fragment {
                     balanceText.setVisibility(View.VISIBLE);
                     feeText.setVisibility(View.VISIBLE);
                     edit.setVisibility(View.VISIBLE);
-                    isoText.setTextColor(getContext().getColor(R.color.almost_black));
+                    isoText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.almost_black));
                     isoText.setText(CurrencyUtils.getSymbolByIso(getActivity(), selectedIso));
                     isoText.setTextSize(28);
                     final float scaleX = amountEdit.getScaleX();
@@ -255,7 +259,7 @@ public class FragmentSend extends Fragment {
                     set.clone(amountLayout);
                     TransitionManager.beginDelayedTransition(amountLayout, tr);
 
-                    int px4 = Utils.getPixelsFromDps(getContext(), 4);
+                    int px4 = Utils.getPixelsFromDps(getActivity().getBaseContext(), 4);
 //                    int px8 = Utils.getPixelsFromDps(getContext(), 8);
                     set.connect(balanceText.getId(), ConstraintSet.TOP, isoText.getId(), ConstraintSet.BOTTOM, px4);
                     set.connect(feeText.getId(), ConstraintSet.TOP, balanceText.getId(), ConstraintSet.BOTTOM, px4);
@@ -313,7 +317,7 @@ public class FragmentSend extends Fragment {
 
 
                 if (address.isValid()) {
-                    final Activity app = getActivity();
+                    final FragmentActivity app = getActivity();
                     if (app == null) {
                         Log.e(TAG, "paste onClick: app is null");
                         return;
@@ -385,11 +389,11 @@ public class FragmentSend extends Fragment {
         isoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedIso.equalsIgnoreCase(BRSharedPrefs.getPreferredFiatIso(getContext()))) {
-                    Activity app = getActivity();
+                if (selectedIso.equalsIgnoreCase(BRSharedPrefs.getPreferredFiatIso(getActivity().getBaseContext()))) {
+                    FragmentActivity app = getActivity();
                     selectedIso = WalletsMaster.getInstance(app).getCurrentWallet(app).getIso(app);
                 } else {
-                    selectedIso = BRSharedPrefs.getPreferredFiatIso(getContext());
+                    selectedIso = BRSharedPrefs.getPreferredFiatIso(getActivity().getBaseContext());
                 }
                 updateText();
 
@@ -435,7 +439,7 @@ public class FragmentSend extends Fragment {
                     return;
                 }
                 BRCoreAddress address = new BRCoreAddress(req.address);
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (!address.isValid()) {
                     allFilled = false;
 
@@ -486,9 +490,9 @@ public class FragmentSend extends Fragment {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity app = getActivity();
+                FragmentActivity app = getActivity();
                 if (app != null)
-                    app.getFragmentManager().popBackStack();
+                    app.getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -607,7 +611,6 @@ public class FragmentSend extends Fragment {
                 });
             }
         });
-
     }
 
 
@@ -620,20 +623,20 @@ public class FragmentSend extends Fragment {
             public void onAnimationEnd() {
                 if (getActivity() != null) {
                     try {
-                        getActivity().getFragmentManager().popBackStack();
+                        Log.i(TAG,"onStop");
+                        getActivity().getSupportFragmentManager().popBackStack();
                     } catch (Exception ignored) {
-
+                        Log.i(TAG,"onStop failed");
                     }
                 }
             }
-        });
+        });//*/
     }
 
     @Override
     public void onResume() {
         super.onResume();
         loadMetaData();
-
     }
 
     @Override
@@ -695,7 +698,7 @@ public class FragmentSend extends Fragment {
     }
 
     private void updateText() {
-        Activity app = getActivity();
+        FragmentActivity app = getActivity();
         if (app == null) return;
 
         String stringAmount = amountBuilder.toString();
@@ -754,17 +757,17 @@ public class FragmentSend extends Fragment {
 
         boolean isOverTheBalance = inputAmount.doubleValue() > isoBalance.doubleValue();
         if (isOverTheBalance) {
-            balanceText.setTextColor(getContext().getColor(R.color.warning_color));
-            feeText.setTextColor(getContext().getColor(R.color.warning_color));
-            amountEdit.setTextColor(getContext().getColor(R.color.warning_color));
+            balanceText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.warning_color));
+            feeText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.warning_color));
+            amountEdit.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.warning_color));
             if (!amountLabelOn)
-                isoText.setTextColor(getContext().getColor(R.color.warning_color));
+                isoText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.warning_color));
         } else {
-            balanceText.setTextColor(getContext().getColor(R.color.light_gray));
-            feeText.setTextColor(getContext().getColor(R.color.light_gray));
-            amountEdit.setTextColor(getContext().getColor(R.color.almost_black));
+            balanceText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.light_gray));
+            feeText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.light_gray));
+            amountEdit.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.almost_black));
             if (!amountLabelOn)
-                isoText.setTextColor(getContext().getColor(R.color.almost_black));
+                isoText.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.almost_black));
         }
         //formattedBalance
         String formattedBalance = CurrencyUtils.getFormattedAmount(app, selectedIso, isIsoCrypto ? wallet.getSmallestCryptoForCrypto(app, isoBalance) : isoBalance);
@@ -826,18 +829,18 @@ public class FragmentSend extends Fragment {
         String iso = wallet.getIso(getActivity());
         if (isRegular) {
             BRSharedPrefs.putFavorStandardFee(getActivity(), iso, true);
-            regular.setTextColor(getContext().getColor(R.color.white));
-            regular.setBackground(getContext().getDrawable(R.drawable.b_half_left_blue));
-            economy.setTextColor(getContext().getColor(R.color.dark_blue));
-            economy.setBackground(getContext().getDrawable(R.drawable.b_half_right_blue_stroke));
+            regular.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.white));
+            regular.setBackground(getActivity().getBaseContext().getDrawable(R.drawable.b_half_left_blue));
+            economy.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.dark_blue));
+            economy.setBackground(getActivity().getBaseContext().getDrawable(R.drawable.b_half_right_blue_stroke));
             feeDescription.setText(String.format(getString(R.string.FeeSelector_estimatedDeliver), getString(R.string.FeeSelector_regularTime)));
             warningText.getLayoutParams().height = 0;
         } else {
             BRSharedPrefs.putFavorStandardFee(getActivity(), iso, false);
-            regular.setTextColor(getContext().getColor(R.color.dark_blue));
-            regular.setBackground(getContext().getDrawable(R.drawable.b_half_left_blue_stroke));
-            economy.setTextColor(getContext().getColor(R.color.white));
-            economy.setBackground(getContext().getDrawable(R.drawable.b_half_right_blue));
+            regular.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.dark_blue));
+            regular.setBackground(getActivity().getBaseContext().getDrawable(R.drawable.b_half_left_blue_stroke));
+            economy.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(),R.color.white));
+            economy.setBackground(getActivity().getBaseContext().getDrawable(R.drawable.b_half_right_blue));
             feeDescription.setText(String.format(getString(R.string.FeeSelector_estimatedDeliver), getString(R.string.FeeSelector_economyTime)));
             warningText.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
         }
@@ -871,10 +874,8 @@ public class FragmentSend extends Fragment {
 
     private void loadMetaData() {
         ignoreCleanup = false;
-        if (!Utils.isNullOrEmpty(savedMemo))
-            commentEdit.setText(savedMemo);
-        if (!Utils.isNullOrEmpty(savedIso))
-            selectedIso = savedIso;
+        if (!Utils.isNullOrEmpty(savedMemo))commentEdit.setText(savedMemo);
+        if (!Utils.isNullOrEmpty(savedIso))selectedIso = savedIso;
         if (!Utils.isNullOrEmpty(savedAmount)) {
             amountBuilder = new StringBuilder(savedAmount);
             new Handler().postDelayed(new Runnable() {
@@ -884,7 +885,6 @@ public class FragmentSend extends Fragment {
                     updateText();
                 }
             }, 500);
-
         }
     }
 

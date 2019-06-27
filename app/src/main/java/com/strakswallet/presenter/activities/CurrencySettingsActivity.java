@@ -1,6 +1,6 @@
 package com.strakswallet.presenter.activities;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,7 +57,7 @@ public class CurrencySettingsActivity extends BRActivity {
             }
         });
 
-        final Activity app = this;
+        final AppCompatActivity app = this;
         final BaseWalletManager wm = WalletsMaster.getInstance(app).getCurrentWallet(app);
 
         mRescanBlockchainRow.setOnClickListener(new View.OnClickListener() {

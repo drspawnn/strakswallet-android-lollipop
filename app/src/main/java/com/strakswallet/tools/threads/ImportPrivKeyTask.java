@@ -1,6 +1,6 @@
 package com.strakswallet.tools.threads;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -69,12 +69,12 @@ import java.math.BigDecimal;
 
 public class ImportPrivKeyTask extends AsyncTask<String, String, String> {
     public static final String TAG = ImportPrivKeyTask.class.getName();
-    private Activity app;
+    private AppCompatActivity app;
     private String key;
     private String iso;
     private BRCoreTransaction mTransaction;
 
-    public ImportPrivKeyTask(Activity activity) {
+    public ImportPrivKeyTask(AppCompatActivity activity) {
         app = activity;
     }
 
@@ -267,14 +267,14 @@ public class ImportPrivKeyTask extends AsyncTask<String, String, String> {
         }
         if (BRCoreKey.isValidBitcoinBIP38Key(privKey)) {
             Log.d(TAG, "isValidBitcoinBIP38Key true");
-            ((Activity) ctx).runOnUiThread(new Runnable() {
+            ((AppCompatActivity) ctx).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
                     final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 //                    builder.setTitle("password protected key");
 
-                    final View input = ((Activity) ctx).getLayoutInflater().inflate(R.layout.view_bip38password_dialog, null);
+                    final View input = ((AppCompatActivity) ctx).getLayoutInflater().inflate(R.layout.view_bip38password_dialog, null);
                     // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                     builder.setView(input);
 
@@ -293,7 +293,7 @@ public class ImportPrivKeyTask extends AsyncTask<String, String, String> {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (ctx != null)
-                                ((Activity) ctx).runOnUiThread(new Runnable() {
+                                ((AppCompatActivity) ctx).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         BRToast.showCustomToast(ctx, ctx.getString(R.string.Import_checking), 500, Toast.LENGTH_LONG, R.drawable.toast_layout_blue);
@@ -334,7 +334,7 @@ public class ImportPrivKeyTask extends AsyncTask<String, String, String> {
             return true;
         } else if (BRCoreKey.isValidBitcoinPrivateKey(privKey)) {
             Log.d(TAG, "isValidBitcoinPrivateKey true");
-            new ImportPrivKeyTask(((Activity) ctx)).execute(privKey, walletManager.getIso(ctx));
+            new ImportPrivKeyTask(((AppCompatActivity) ctx)).execute(privKey, walletManager.getIso(ctx));
             return true;
         } else {
             Log.e(TAG, "trySweepWallet: !isValidBitcoinPrivateKey && !isValidBitcoinBIP38Key");

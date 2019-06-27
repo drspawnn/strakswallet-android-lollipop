@@ -2,13 +2,15 @@ package com.strakswallet.tools.animation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
+
 
 
 /**
@@ -35,7 +37,7 @@ import android.view.animation.OvershootInterpolator;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-public class SlideDetector implements View.OnTouchListener {
+public class SlideDetector extends FragmentActivity implements View.OnTouchListener{
 
     private static final String TAG = SlideDetector.class.getName();
 
@@ -93,6 +95,9 @@ public class SlideDetector implements View.OnTouchListener {
     }
 
     private void removeCurrentView() {
-        ((Activity) context).getFragmentManager().popBackStack();
+//        ((Activity) context).getFragmentManager().popBackStack();
+        if (((FragmentActivity) context).getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+        }
     }
 }

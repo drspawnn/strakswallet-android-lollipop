@@ -1,6 +1,6 @@
 package com.strakswallet.tools.adapter;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -58,7 +58,7 @@ public class WalletListAdapter extends RecyclerView.Adapter<WalletListAdapter.Wa
     @Override
     public WalletItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+        LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
         View convertView = inflater.inflate(R.layout.wallet_list_item, parent, false);
 
         return new WalletItemViewHolder(convertView);

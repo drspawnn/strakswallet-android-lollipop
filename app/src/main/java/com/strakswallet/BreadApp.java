@@ -1,14 +1,15 @@
 package com.strakswallet;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Point;
-import android.hardware.fingerprint.FingerprintManager;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.util.Log;
@@ -59,7 +60,7 @@ import static com.platform.APIClient.BREAD_POINT;
 public class BreadApp extends Application {
     private static final String TAG = BreadApp.class.getName();
     public static int DISPLAY_HEIGHT_PX;
-    FingerprintManager mFingerprintManager;
+    FingerprintManagerCompat mFingerprintManager;
     // host is the server(s) on which the API is hosted
     public static String HOST = "api.breadwallet.com";
     private static List<OnAppBackgrounded> listeners;
@@ -73,15 +74,17 @@ public class BreadApp extends Application {
 
     public static final Map<String, String> mHeaders = new HashMap<>();
 
-    private static Activity currentActivity;
+    private static AppCompatActivity currentActivity;
 
+    @SuppressLint("ServiceCast")
     @Override
     public void onCreate() {
         super.onCreate();
         if (Utils.isEmulatorOrDebug(this)) {
 //            BRKeyStore.putFailCount(0, this);
             HOST = "stage2.breadwallet.com";
-            FirebaseCrash.setCrashCollectionEnabled(false);
+            try{FirebaseCrash.setCrashCollectionEnabled(false);}
+            catch (Exception ex){throw new RuntimeException("Exception FirebaseCrash.setCrashCollectionEnabled");}
 //            FirebaseCrash.report(new RuntimeException("test with new json file"));
         }
         mContext = this;
@@ -104,7 +107,7 @@ public class BreadApp extends Application {
         display.getSize(size);
         int DISPLAY_WIDTH_PX = size.x;
         DISPLAY_HEIGHT_PX = size.y;
-        mFingerprintManager = (FingerprintManager) getSystemService(Context.FINGERPRINT_SERVICE);
+        mFingerprintManager = FingerprintManagerCompat.from(this);//(FingerprintManagerCompat) getSystemService(Context.FINGERPRINT_SERVICE);
 
         registerReceiver(InternetManager.getInstance(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -138,7 +141,7 @@ public class BreadApp extends Application {
         return app;
     }
 
-    public static void setBreadContext(Activity app) {
+    public static void setBreadContext(AppCompatActivity app) {
         currentActivity = app;
     }
 
