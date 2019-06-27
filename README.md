@@ -4,7 +4,7 @@
 
 ### Intro 
 
-Official straks android wallet is supporting android m or later. If your device's android version is android m or later, please use [official version](https://github.com/straks/strakswallet-android). This wallet is **for only Android Lollipop** users and **unofficial** version.
+Official straks android wallet is supporting android m or later. If your device's android version is android m or later, please use [official version](https://github.com/straks/strakswallet-android). This **unofficial** version is **for only Android Lollipop** users.
 
 ### Purpose
 
