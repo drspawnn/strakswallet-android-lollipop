@@ -1,43 +1,19 @@
-[![straks](/images/strakswallet.png)](https://straks.tech/#wallets) 
+![straks](/images/strakswallet-lolli.png)
 
-## STRAKS Wallet for Android 
+## Unofficial STRAKS Wallet for Android Lollipop 
 
-#### Android Wallet Done Right
+### Intro 
 
-This is the Android port of the STRAKSwallet iOS app, which can be found [here](https://github.com/straks/strakswallet-ios/).
+Official straks android wallet is supporting android m or later. If your device's android version is android m or later, please use [official version](https://github.com/straks/strakswallet-android). This wallet is **for only Android Lollipop** users and **unofficial** version.
 
-#### A Completely Standalone STRAKS Wallet:
+### Purpose
 
-STRAKSwallet is a real standalone STRAKS client. There is no server to get hacked or go down, so you can always access your money. Using
-[SPV](https://en.bitcoin.it/wiki/Thin_Client_Security#Header-Only_Clients)
-mode, STRAKSwallet connects directly to the STRAKS network with the fast
-performance you need on a mobile device.
+This project purpose is to increase the percentage of devices supported by the straks wallet.
+If you look official android [distribution dashboard](https://developer.android.com/about/dashboards), current straks official wallet is supporting %74.8 of all Android devices. Now with Straks wallet Lollipop edition, straks wallet can supporting %89.3 of all Android devices.
 
-#### The Next Step in Wallet Security:
+#### Current Distribution Percantage
 
-STRAKSwallet is designed to protect you from malware, browser security holes,
-*even physical theft*. With AES hardware encryption, app sandboxing, and verified boot, STRAKSwallet represents a significant security advance over
-web and desktop wallets.
-
-#### Beautiful Simplicity:
-
-Simplicity is STRAKSwallet's core design principle. A simple backup phrase is
-all you need to restore your wallet on another device if yours is ever lost or
-broken.  Because STRAKSwallet is  
-[deterministic](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki),
-your balance and transaction history can be recovered from just your backup
-phrase.
-
-___________________________________________________________
-
-#### Features:
-
-- ["simplified payment verification"](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki) for fast mobile performance
-- no server to get hacked or go down
-- single backup phrase that works forever
-- private keys never leave your device
-- import [password protected](https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki) paper wallets
-- ["payment protocol"](https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki) payee identity certification
+![distribution](/images/distribution.png)
 
 ___________________________________________________________
 
