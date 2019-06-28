@@ -1,5 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import static com.strakswallet.R.layout.settings_list_section;
 public class SettingsActivity extends BRActivity {
     private static final String TAG = SettingsActivity.class.getName();
     private ListView listView;
+    public Parcelable scrollSTATE;
     public List<BRSettingsItem> items;
     public static boolean appVisible = false;
     private static SettingsActivity app;
@@ -130,26 +132,6 @@ public class SettingsActivity extends BRActivity {
         public int getItemViewType(int position) {
             return super.getItemViewType(position);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        appVisible = true;
-        app = this;
-        if (items == null)
-            items = new ArrayList<>();
-        items.clear();
-
-        populateItems();
-
-        listView.setAdapter(new SettingsListAdapter(this, R.layout.settings_list_item, items));
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
     }
 
     private void populateItems() {
@@ -280,9 +262,30 @@ public class SettingsActivity extends BRActivity {
         }, false));
 
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appVisible = true;
+        app = this;
+        if (items == null)
+            items = new ArrayList<>();
+        items.clear();
 
+        populateItems();
 
+        listView.setAdapter(new SettingsListAdapter(this, R.layout.settings_list_item, items));
+
+        if(scrollSTATE != null) {
+            listView.onRestoreInstanceState(scrollSTATE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
     }
 
     @Override
@@ -294,5 +297,6 @@ public class SettingsActivity extends BRActivity {
     protected void onPause() {
         super.onPause();
         appVisible = false;
+        scrollSTATE = listView.onSaveInstanceState();
     }
 }
