@@ -272,7 +272,7 @@ public class BRKeyStore {
         end.add(Calendar.YEAR, 100);
         KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
                 .setAlias(alias)
-                .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                .setSubject(new X500Principal("CN=Straks, O=Straks Tech"))
                 .setSerialNumber(BigInteger.ONE)
                 .setStartDate(start.getTime())
                 .setEndDate(end.getTime())
@@ -924,7 +924,7 @@ public class BRKeyStore {
                 end.add(Calendar.YEAR, 100);
                 KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
                         .setAlias(alias)
-                        .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                        .setSubject(new X500Principal("CN=Straks, O=Straks Tech"))
                         .setSerialNumber(BigInteger.ONE)
                         .setStartDate(start.getTime())
                         .setEndDate(end.getTime())
