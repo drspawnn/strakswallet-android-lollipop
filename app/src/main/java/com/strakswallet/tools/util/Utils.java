@@ -176,13 +176,18 @@ public class Utils {
         FingerprintManagerCompat fingerprintManager = FingerprintManagerCompat.from(app.getApplicationContext());//(FingerprintManagerCompat) app.getSystemService(FINGERPRINT_SERVICE);
         if (fingerprintManager == null) return false;
         // Device doesn't support fingerprint authentication
-        if (ActivityCompat.checkSelfPermission(app, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-            try {
-                Toast.makeText(app.getApplicationContext(), "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
-            }catch (RuntimeException rune){return false;}
-            return false;
+        if (!fingerprintManager.isHardwareDetected()) {Log.d(TAG,"Fingerprint hardware not detected!"); return false;}
+        else {
+            if (ActivityCompat.checkSelfPermission(app, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
+                try {
+                    Toast.makeText(app.getApplicationContext(), "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+                    return false;
+                } catch (RuntimeException rune) {
+                    Log.e(TAG,rune.getMessage());
+                    return false;
+                }
+            else return true;
         }
-        return fingerprintManager.isHardwareDetected();
     }
 
     public static void hideKeyboard(Context app) {
