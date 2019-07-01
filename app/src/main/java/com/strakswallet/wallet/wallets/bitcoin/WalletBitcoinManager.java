@@ -750,8 +750,18 @@ public class WalletBitcoinManager extends BRCoreWalletManager implements BaseWal
                                 AudioManager audioManager = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
                                 if (audioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
                                     final MediaPlayer mp = MediaPlayer.create(ctx, R.raw.coinflip);
+                                    final int streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                                    if(streamVolume==0) audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2,0);
                                     if (mp != null) try {
                                         mp.start();
+                                        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+                                        {
+                                            @Override
+                                            public void onCompletion(MediaPlayer mp)
+                                            {
+                                                ((AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE)).setStreamVolume(AudioManager.STREAM_MUSIC, streamVolume,0);
+                                            }
+                                        });
                                     } catch (IllegalArgumentException ex) {
                                         Log.e(TAG, "run: ", ex);
                                     }
