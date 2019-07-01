@@ -667,6 +667,14 @@ public class WalletBitcoinManager extends BRCoreWalletManager implements BaseWal
                     Toast.makeText(app, "syncStarted " + getIso(app), Toast.LENGTH_LONG).show();
                 }
             });
+        else if (mSyncRetryCount == 0)
+            BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
+                @Override
+                public void run() {
+                    BRToast.showCustomToast(app, "Synchronization Started",
+                            BreadApp.DISPLAY_HEIGHT_PX - 200, Toast.LENGTH_SHORT, R.drawable.toast_layout_green, false);
+                }
+            });
 
         for (SyncListener list : syncListeners)
             if (list != null) list.syncStarted();
@@ -711,7 +719,8 @@ public class WalletBitcoinManager extends BRCoreWalletManager implements BaseWal
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(app, "Syncing failed, retried " + SYNC_MAX_RETRY + " times.", Toast.LENGTH_LONG).show();
+                        BRToast.showCustomToast(app, "Synchronization Failed (Retried " + SYNC_MAX_RETRY + " times)",
+                                BreadApp.DISPLAY_HEIGHT_PX - 200, Toast.LENGTH_LONG, R.drawable.toast_layout_red, false);
                     }
                 });
             }
