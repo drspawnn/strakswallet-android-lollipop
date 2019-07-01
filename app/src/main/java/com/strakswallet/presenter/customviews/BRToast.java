@@ -56,24 +56,40 @@ public class BRToast {
         if (!BreadApp.isAppInBackground(app)) return;
 
         if (customToastAvailable || !oldMessage.equals(message)) {
-            oldMessage = message;
-            customToastAvailable = false;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    customToastAvailable = true;
-                }
-            }, 1000);
-            LayoutInflater inflater = ((AppCompatActivity) app).getLayoutInflater();
-            View layout = inflater.inflate(R.layout.toast, (ViewGroup) ((AppCompatActivity) app).findViewById(R.id.toast_layout_root));
-            layout.setBackgroundResource(layoutDrawable);
-            TextView text = layout.findViewById(R.id.toast_text);
-            text.setText(message);
-            toast.setGravity(Gravity.TOP, 0, yOffSet);
-            toast.setDuration(duration);
-            toast.setView(layout);
-            toast.show();
+            createToast(app, message, yOffSet, duration, layoutDrawable);
         }
+    }
+
+    public static void showCustomToast(Context app, String message, int yOffSet, int duration, int layoutDrawable, boolean showOnlyBackground) {
+        if (app == null) return;
+        if (!(app instanceof AppCompatActivity)) app = BreadApp.getBreadContext();
+        if (app == null) return;
+        if (toast == null) toast = new Toast(app);
+        if (showOnlyBackground) if (!BreadApp.isAppInBackground(app)) return;
+
+        if (customToastAvailable || !oldMessage.equals(message)) {
+            createToast(app, message, yOffSet, duration, layoutDrawable);
+        }
+    }
+
+    public static void createToast(Context app, String message, int yOffSet, int duration, int layoutDrawable){
+        oldMessage = message;
+        customToastAvailable = false;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                customToastAvailable = true;
+            }
+        }, 1000);
+        LayoutInflater inflater = ((AppCompatActivity) app).getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast, (ViewGroup) ((AppCompatActivity) app).findViewById(R.id.toast_layout_root));
+        layout.setBackgroundResource(layoutDrawable);
+        TextView text = layout.findViewById(R.id.toast_text);
+        text.setText(message);
+        toast.setGravity(Gravity.TOP, 0, yOffSet);
+        toast.setDuration(duration);
+        toast.setView(layout);
+        toast.show();
     }
 
     public static void cancelToast() {
