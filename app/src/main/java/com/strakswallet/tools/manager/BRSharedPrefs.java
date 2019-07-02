@@ -370,6 +370,20 @@ public class BRSharedPrefs {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("scanRecommended_" + iso.toUpperCase(), recommended);
+        editor.putBoolean("scanRecommendedDismissed_" + iso.toUpperCase(), false);
+        editor.apply();
+    }
+
+    public static boolean getScanRecommendedDismissed(Context context, String iso) {
+        SharedPreferences settingsToGet = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return settingsToGet.getBoolean("scanRecommendedDismissed_" + iso.toUpperCase(), false);
+    }
+
+    public static void putScanRecommendedDismissed(Context context, String iso, boolean dismissed) {
+        if (context == null) return;
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("scanRecommendedDismissed_" + iso.toUpperCase(), dismissed);
         editor.apply();
     }
 

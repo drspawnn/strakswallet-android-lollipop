@@ -203,6 +203,9 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
         if (mCurrentPrompt == PromptManager.PromptItem.SHARE_DATA) {
             BRSharedPrefs.putShareDataDismissed(app, true);
         }
+        else if (mCurrentPrompt == PromptManager.PromptItem.RECOMMEND_RESCAN) {
+            BRSharedPrefs.putScanRecommendedDismissed(app, "STAK",true);
+        }
         if (mCurrentPrompt != null)
             BREventManager.getInstance().pushEvent("prompt." + PromptManager.getInstance().getPromptName(mCurrentPrompt) + ".dismissed");
         mCurrentPrompt = null;
