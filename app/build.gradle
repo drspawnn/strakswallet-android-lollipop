@@ -9,9 +9,10 @@ android {
         applicationId = 'com.strakswallet'
         minSdkVersion 21
         maxSdkVersion 22
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
-        versionCode 101
-        versionName "101"
+        versionCode 102
+        versionName "102"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
