@@ -1,5 +1,7 @@
 package com.strakswallet.tools.manager;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -39,10 +41,13 @@ public class BRNotificationManager {
 
     public static void sendNotification(AppCompatActivity ctx, int icon, String title, String message, int mId) {
         if (ctx == null) return;
+        Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + ctx.getPackageName() + "/raw/coinflip");
         android.support.v4.app.NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(ctx)
+                new NotificationCompat.Builder(ctx, "straksChannel")
                         .setSmallIcon(icon)
                         .setContentTitle(title)
+                        .setSound(soundUri)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentText(message);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(ctx, ctx.getClass());
