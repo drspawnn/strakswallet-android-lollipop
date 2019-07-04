@@ -48,6 +48,7 @@ public class BRNotificationManager {
                         .setContentTitle(title)
                         .setSound(soundUri)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true)    // for remove notification after click
                         .setContentText(message);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(ctx, ctx.getClass());
