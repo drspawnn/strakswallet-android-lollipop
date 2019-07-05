@@ -1,5 +1,6 @@
 package com.strakswallet.presenter.activities.settings;
 
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -82,12 +83,21 @@ public class FingerprintActivity extends BRActivity {
                 AppCompatActivity app = FingerprintActivity.this;
                 if (isChecked && !Utils.isFingerprintEnrolled(app)) {
                     Log.e(TAG, "onCheckedChanged: fingerprint not setup");
-                    BRDialog.showCustomDialog(app, getString(R.string.TouchIdSettings_disabledWarning_title_android), getString(R.string.TouchIdSettings_disabledWarning_body_android), getString(R.string.Button_ok), null, new BRDialogView.BROnClickListener() {
-                        @Override
-                        public void onClick(BRDialogView brDialogView) {
-                            brDialogView.dismissWithAnimation();
-                        }
-                    }, null, null, 0);
+                    BRDialog.showCustomDialog(app, getString(R.string.TouchIdSettings_disabledWarning_title_android), getString(R.string.TouchIdSettings_disabledWarning_body_android),
+                            getString(R.string.Button_settings), getString(R.string.AccessibilityLabels_close), new BRDialogView.BROnClickListener() {
+                                @Override
+                                public void onClick(BRDialogView brDialogView) {
+                                    //Start security settings for user
+                                    Intent intent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
+                                    startActivityForResult(intent,1);
+                                    brDialogView.dismiss();
+                                }
+                            }, new BRDialogView.BROnClickListener() {
+                                @Override
+                                public void onClick(BRDialogView brDialogView) {
+                                    brDialogView.dismissWithAnimation();
+                                }
+                            }, null, 0, false);
                     buttonView.setChecked(false);
                 } else {
                     BRSharedPrefs.putUseFingerprint(app, isChecked);
@@ -146,6 +156,17 @@ public class FingerprintActivity extends BRActivity {
         BigDecimal curAmount = master.getCurrentWallet(this).getFiatForSmallestCrypto(this, satoshis, null);
         //formatted string for the label
         return String.format(getString(R.string.TouchIdSettings_spendingLimit), CurrencyUtils.getFormattedAmount(this, "STAK", amount), CurrencyUtils.getFormattedAmount(this, iso, curAmount));
+    }
+
+    // Results from SecuritySettingsActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case 1:
+                // try enable fingerprint again
+                toggleButton.setChecked(true);
+                break;
+        }
     }
 
     @Override
