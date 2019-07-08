@@ -83,8 +83,14 @@ public class WalletListAdapter extends RecyclerView.Adapter<WalletListAdapter.Wa
         // Set wallet fields
         holder.mWalletName.setText(name);
         holder.mTradePrice.setText(exchangeRate);
-        holder.mWalletBalanceUSD.setText(fiatBalance);
-        holder.mWalletBalanceCurrency.setText(cryptoBalance);
+        if (BRSharedPrefs.isCryptoPreferred(mContext)) {
+            holder.mWalletBalanceUSD.setText(cryptoBalance);
+            holder.mWalletBalanceCurrency.setText(fiatBalance);
+        } else {
+            holder.mWalletBalanceUSD.setText(fiatBalance);
+            holder.mWalletBalanceCurrency.setText(cryptoBalance);
+        }
+
         holder.mSyncingProgressBar.setVisibility(item.mShowSyncing ? View.VISIBLE : View.INVISIBLE);
         holder.mSyncingProgressBar.setProgress(item.mProgress);
         holder.mSyncingLabel.setVisibility(item.mShowSyncingLabel ? View.VISIBLE : View.INVISIBLE);

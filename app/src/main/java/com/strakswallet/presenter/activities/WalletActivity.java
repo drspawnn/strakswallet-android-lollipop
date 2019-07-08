@@ -213,7 +213,6 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
         boolean cryptoPreferred = BRSharedPrefs.isCryptoPreferred(this);
 
         if (cryptoPreferred) {
-//            swap();
             setPriceTags(true, false);
         }
 
@@ -497,13 +496,16 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
         }
 
+        long delay = 0; // if animation false, dont wait
+        if(animate) delay = toolBarConstraintLayout.getLayoutTransition().getDuration(LayoutTransition.CHANGE_APPEARING);
+
         new Handler().postDelayed(
                 new Runnable() {
                     @Override
                     public void run() {
-                        updateUi();
+                        TxManager.getInstance().updateTxList(WalletActivity.this);
                     }
-                }, toolBarConstraintLayout.getLayoutTransition().getDuration(LayoutTransition.CHANGE_APPEARING));
+                }, delay);
     }
 
     @Override
