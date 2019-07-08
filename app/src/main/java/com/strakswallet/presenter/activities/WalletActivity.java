@@ -257,18 +257,18 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
         }
 
         if (wallet.getUiConfiguration().buyVisible) {
-            mBuyButton.setHasShadow(false);
+//            mBuyButton.setHasShadow(false);
             mBuyButton.setVisibility(View.GONE);
-            mBuyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(WalletActivity.this, WebViewActivity.class);
-                    intent.putExtra("url", HTTPServer.URL_BUY);
-                    AppCompatActivity app = WalletActivity.this;
-                    app.startActivity(intent);
-                    app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
-                }
-            });
+//            mBuyButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(WalletActivity.this, WebViewActivity.class);
+//                    intent.putExtra("url", HTTPServer.URL_BUY);
+//                    AppCompatActivity app = WalletActivity.this;
+//                    app.startActivity(intent);
+//                    app.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_down);
+//                }
+//            });
 
         } else {
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
@@ -306,7 +306,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
         mBuyButton.setColor(Color.parseColor(wallet.getUiConfiguration().colorHex));
         mReceiveButton.setColor(Color.parseColor(wallet.getUiConfiguration().colorHex));
 
-        TxManager.getInstance().updateTxList(WalletActivity.this);
+//        TxManager.getInstance().updateTxList(WalletActivity.this);
 
         /*
         if (!BRSharedPrefs.wasBchDialogShown(this)) {
@@ -334,7 +334,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
             });
         */
 
-            BRSharedPrefs.putBchDialogShown(WalletActivity.this, true);
+//            BRSharedPrefs.putBchDialogShown(WalletActivity.this, true);
         //}
 
 
@@ -526,7 +526,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
                 BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
                     @Override
                     public void run() {
-                        updateUi();
+                        TxManager.getInstance().updateTxList(WalletActivity.this);
                     }
                 });
             }
@@ -541,7 +541,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
                 BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
                     @Override
                     public void run() {
-                        updateUi();
+                        TxManager.getInstance().updateTxList(WalletActivity.this);
                     }
                 });
 
@@ -642,11 +642,11 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
     }
 
     @Override
-    public void txListModified(String hash) {
+    public void txListModified(final String hash) {
         BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
             @Override
             public void run() {
-                updateUi();
+                if (hash != null) TxManager.getInstance().updateTxList(WalletActivity.this);
             }
         });
 
