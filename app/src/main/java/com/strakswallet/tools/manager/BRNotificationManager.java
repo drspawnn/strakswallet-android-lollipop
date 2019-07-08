@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import com.strakswallet.presenter.activities.WalletActivity;
+
 
 /**
  * BreadWallet
@@ -51,7 +53,7 @@ public class BRNotificationManager {
                         .setAutoCancel(true)    // for remove notification after click
                         .setContentText(message);
         // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(ctx, ctx.getClass());
+        Intent resultIntent = new Intent(ctx, WalletActivity.class);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
