@@ -1,6 +1,8 @@
 package com.strakswallet.presenter.activities;
 
 import android.animation.LayoutTransition;
+import android.support.transition.ChangeBounds;
+import android.support.transition.Transition;
 import android.support.v7.app.AppCompatActivity;
 import android.app.ActivityManager;
 import android.app.usage.UsageStats;
@@ -404,7 +406,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
     }
 
     private void swap() {
-        if (!BRAnimator.isClickAllowed()) return;
+        if (!BRAnimator.isClickAllowedManual(false)) return;
         boolean b = !BRSharedPrefs.isCryptoPreferred(this);
         setPriceTags(b, true);
         BRSharedPrefs.setIsCryptoPreferred(this, b);
@@ -415,8 +417,32 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
         //mBalancePrimary.setTextSize(!cryptoPreferred ? t2Size : t1Size);
         ConstraintSet set = new ConstraintSet();
         set.clone(toolBarConstraintLayout);
-        if (animate)
-            TransitionManager.beginDelayedTransition(toolBarConstraintLayout);
+        if (animate){
+            ChangeBounds mySwapTransition = new ChangeBounds();
+            mySwapTransition.addListener(new Transition.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    TxManager.getInstance().updateTxList(WalletActivity.this);
+                    while (BRAnimator.isClickAllowedManual(true)) ;
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+                }
+
+                @Override
+                public void onTransitionPause(Transition transition) {
+                }
+
+                @Override
+                public void onTransitionResume(Transition transition) {
+                }
+            });
+            TransitionManager.beginDelayedTransition(toolBarConstraintLayout,mySwapTransition);}
         int px8 = Utils.getPixelsFromDps(this, 8);
         int px16 = Utils.getPixelsFromDps(this, 16);
 //
@@ -496,16 +522,16 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
         }
 
-        long delay = 0; // if animation false, dont wait
-        if(animate) delay = toolBarConstraintLayout.getLayoutTransition().getDuration(LayoutTransition.CHANGE_APPEARING);
-
-        new Handler().postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        TxManager.getInstance().updateTxList(WalletActivity.this);
-                    }
-                }, delay);
+//        long delay = 0; // if animation false, dont wait
+//        if(animate) delay = toolBarConstraintLayout.getLayoutTransition().getDuration(LayoutTransition.CHANGE_APPEARING);
+//
+//        new Handler().postDelayed(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        TxManager.getInstance().updateTxList(WalletActivity.this);
+//                    }
+//                },delay);
     }
 
     @Override
