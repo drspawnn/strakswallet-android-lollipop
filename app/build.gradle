@@ -11,8 +11,8 @@ android {
         maxSdkVersion 22
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
-        versionCode 102
-        versionName "102"
+        versionCode 103
+        versionName "1.0.3"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
