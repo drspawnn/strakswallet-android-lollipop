@@ -369,6 +369,13 @@ public class BRAnimator {
 
     }
 
+    public static boolean isClickAllowedManual(boolean isEnd)
+    {
+        if(clickAllowed){clickAllowed = false; return true;}
+        else if(isEnd){clickAllowed = true; return false;}
+        else return false;
+    }
+
     public static boolean isClickAllowed() {
         if (clickAllowed) {
             clickAllowed = false;
