@@ -16,7 +16,7 @@ import com.platform.middlewares.HTTPFileMiddleware;
 import com.platform.middlewares.HTTPIndexMiddleware;
 import com.platform.middlewares.HTTPRouter;
 import com.platform.middlewares.plugins.CameraPlugin;
-import com.platform.middlewares.plugins.GeoLocationPlugin;
+//import com.platform.middlewares.plugins.GeoLocationPlugin;
 import com.platform.middlewares.plugins.KVStorePlugin;
 import com.platform.middlewares.plugins.LinkPlugin;
 import com.platform.middlewares.plugins.WalletPlugin;
@@ -93,16 +93,16 @@ public class HTTPServer {
 
         HandlerCollection handlerCollection = new HandlerCollection();
 
-        WebSocketHandler wsHandler = new WebSocketHandler() {
-            @Override
-            public void configure(WebSocketServletFactory factory) {
-                factory.register(BRGeoWebSocketHandler.class);
-            }
-        };
+//        WebSocketHandler wsHandler = new WebSocketHandler() {
+//            @Override
+//            public void configure(WebSocketServletFactory factory) {
+//                factory.register(BRGeoWebSocketHandler.class);
+//            }
+//        };
 
         ServerHandler serverHandler = new ServerHandler();
         handlerCollection.addHandler(serverHandler);
-        handlerCollection.addHandler(wsHandler);
+//        handlerCollection.addHandler(wsHandler);
 
         server.setHandler(handlerCollection);
 
@@ -215,8 +215,8 @@ public class HTTPServer {
         middlewares.add(httpIndexMiddleware);
 
         // geo plugin provides access to onboard geo location functionality
-        Plugin geoLocationPlugin = new GeoLocationPlugin();
-        httpRouter.appendPlugin(geoLocationPlugin);
+//        Plugin geoLocationPlugin = new GeoLocationPlugin();
+//        httpRouter.appendPlugin(geoLocationPlugin);
 
         // camera plugin
         Plugin cameraPlugin = new CameraPlugin();
