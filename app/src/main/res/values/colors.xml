@@ -19,6 +19,7 @@
     <item name="wallet_orange" type="color">#ff8000</item>
     <item name="wallet_red" type="color">#FF5454</item>
     <item name="wallet_green" type="color">#00BF00</item>
+    <item name="transparent" type="color">#00000000</item>
     <item name="white_trans" type="color">#32ffffff</item>
     <item name="black_trans" type="color">#b5000000</item>
     <item name="red_text" type="color">#FF5454</item>
