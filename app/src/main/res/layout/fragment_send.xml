@@ -53,7 +53,7 @@
                 android:text="@string/Send.title"
                 android:textColor="@color/almost_black"
                 android:textSize="@dimen/header"
-                app:customTFont="CircularPro-Bold.otf"
+                app:customTFont="SF-UI-Display-Bold.otf"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="81dp"/>
 
@@ -170,7 +170,7 @@
                 android:layout_marginStart="16dp"
                 android:text="$"
                 android:textSize="28sp"
-                app:customTFont="CircularPro-Medium.otf"
+                app:customTFont="SF-UI-Display-Medium.otf"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -314,7 +314,7 @@
                     android:text="@string/FeeSelector.regular"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    app:customBFont="CircularPro-Medium.otf"
+                    app:customBFont="SF-UI-Display-Medium.otf"
                     app:isBreadButton="false"
                     />
 
@@ -328,7 +328,7 @@
                     android:text="@string/FeeSelector.economy"
                     android:textColor="@color/dark_blue"
                     android:textSize="14sp"
-                    app:customBFont="CircularPro-Medium.otf"
+                    app:customBFont="SF-UI-Display-Medium.otf"
                     app:isBreadButton="false"
                     />
             </LinearLayout>

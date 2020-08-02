@@ -21,7 +21,7 @@
         />
 
     <com.strakswallet.presenter.customviews.BRText
-        app:customTFont="CircularPro-Medium.otf"
+        app:customTFont="SF-UI-Display-Medium.otf"
         android:id="@+id/item_addon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -101,12 +101,29 @@ public class PromptManager {
         return false;
     }
 
+    // For temporary dismiss. On next start will show missing prompts again.
+    public int nextPrompt_ID = 0;
     public PromptItem nextPrompt(Context app) {
-        if (shouldPrompt(app, RECOMMEND_RESCAN)) return RECOMMEND_RESCAN;
-        if (shouldPrompt(app, UPGRADE_PIN)) return UPGRADE_PIN;
-        if (shouldPrompt(app, PAPER_KEY)) return PAPER_KEY;
-        if (shouldPrompt(app, FINGER_PRINT)) return FINGER_PRINT;
-        if (shouldPrompt(app, SHARE_DATA)) return SHARE_DATA;
+        if (nextPrompt_ID == 0) {
+            if (shouldPrompt(app, RECOMMEND_RESCAN)) return RECOMMEND_RESCAN;
+            nextPrompt_ID++;
+        }
+        if (nextPrompt_ID == 1) {
+            if (shouldPrompt(app, UPGRADE_PIN)) return UPGRADE_PIN;
+            nextPrompt_ID++;
+        }
+        if (nextPrompt_ID == 2) {
+            if (shouldPrompt(app, PAPER_KEY)) return PAPER_KEY;
+            nextPrompt_ID++;
+        }
+        if (nextPrompt_ID == 3) {
+            if (shouldPrompt(app, FINGER_PRINT)) return FINGER_PRINT;
+            nextPrompt_ID++;
+        }
+        if (nextPrompt_ID == 4) {
+            if (shouldPrompt(app, SHARE_DATA)) return SHARE_DATA;
+            nextPrompt_ID++;
+        }
         return null;
     }
 

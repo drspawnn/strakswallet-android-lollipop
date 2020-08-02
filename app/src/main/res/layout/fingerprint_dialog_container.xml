@@ -14,12 +14,15 @@
   ~ limitations under the License
   -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/fingerprint_background"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:filterTouchesWhenObscured="true"
-                android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fingerprint_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/fingerprint_layout"
@@ -31,7 +34,7 @@
         android:orientation="vertical">
 
         <com.strakswallet.presenter.customviews.BRText
-            app:customTFont="CircularPro-Bold.otf"
+            app:customTFont="SF-UI-Display-Bold.otf"
             android:id="@+id/fingerprint_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

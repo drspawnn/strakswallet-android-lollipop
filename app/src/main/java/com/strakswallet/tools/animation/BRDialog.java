@@ -39,6 +39,7 @@ import com.strakswallet.tools.threads.executor.BRExecutor;
 public class BRDialog {
     private static final String TAG = BRDialog.class.getName();
     private static BRDialogView dialog;
+    public static Boolean textLink=false;
 
     /**
      * Safe from any threads

@@ -23,7 +23,7 @@
             android:text="Sent"
             android:textColor="@color/total_assets_usd_color"
             android:textSize="16sp"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
         <ImageButton
@@ -47,7 +47,7 @@
 
             android:textColor="@color/total_assets_usd_color"
             android:textSize="28sp"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
         <com.strakswallet.presenter.customviews.BRText
@@ -58,7 +58,7 @@
             android:layout_marginLeft="60dp"
             android:text="X"
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Bold.otf"/>
+            app:customTFont="SF-UI-Display-Bold.otf"/>
 
         <com.strakswallet.presenter.customviews.BRText
             android:id="@+id/label_when_sent"
@@ -68,7 +68,7 @@
             android:layout_toEndOf="@+id/amount_when_sent"
             android:text=" when sent"
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
         <com.strakswallet.presenter.customviews.BRText
             android:id="@+id/amount_now"
@@ -79,7 +79,7 @@
             android:layout_toRightOf="@id/label_when_sent"
             android:text="X"
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Bold.otf"/>
+            app:customTFont="SF-UI-Display-Bold.otf"/>
 
         <com.strakswallet.presenter.customviews.BRText
             android:id="@+id/label_now"
@@ -90,7 +90,7 @@
             android:layout_toRightOf="@id/amount_now"
             android:text=" now"
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
         <View
@@ -113,7 +113,7 @@
             android:drawablePadding="5dp"
             android:text="Complete"
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
         <com.strakswallet.presenter.customviews.BRText
@@ -125,7 +125,7 @@
             android:layout_marginTop="14dp"
             android:paddingEnd="20dp"
             android:text="Yesterday at 12:53 PM"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
         <View
             android:id="@+id/divider2"
@@ -146,7 +146,7 @@
             android:layout_marginTop="14dp"
             android:text="To"
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
         <com.strakswallet.presenter.customviews.BRText
             android:id="@+id/tx_to_from_address"
@@ -162,7 +162,7 @@
             android:singleLine="true"
             android:text=""
             android:textSize="12sp"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
         <View
             android:id="@+id/divider3"
@@ -183,7 +183,7 @@
             android:text="Memo"
 
             android:textColor="@color/settings_chevron_right"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
         <com.strakswallet.presenter.customviews.BRText
             android:id="@+id/memo"
@@ -197,7 +197,7 @@
             android:layout_toEndOf="@id/memo_label"
             android:text="Sample transaction memo would go here. Some things are truly better left unsaid"
             android:textSize="12sp"
-            app:customTFont="CircularPro-Book.otf"/>
+            app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
         <View
@@ -227,7 +227,7 @@
                 android:text="Starting Balance"
                 android:textColor="@color/settings_chevron_right"
 
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
             <com.strakswallet.presenter.customviews.BRText
                 android:id="@+id/tx_starting_balance"
@@ -237,7 +237,7 @@
                 android:layout_marginRight="14dp"
                 android:layout_marginTop="14dp"
                 android:text=""
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
             <View
@@ -259,7 +259,7 @@
                 android:text="Ending Balance"
                 android:textColor="@color/settings_chevron_right"
 
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
             <com.strakswallet.presenter.customviews.BRText
                 android:id="@+id/tx_ending_balance"
@@ -270,7 +270,7 @@
                 android:layout_marginRight="14dp"
                 android:layout_marginTop="14dp"
                 android:text=""
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
             <View
@@ -292,7 +292,7 @@
                 android:text="Exchange Rate at Time"
                 android:textColor="@color/settings_chevron_right"
 
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
             <com.strakswallet.presenter.customviews.BRText
                 android:id="@+id/exchange_rate"
@@ -303,7 +303,7 @@
                 android:layout_marginRight="14dp"
                 android:layout_marginTop="14dp"
                 android:text=""
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
             <View
                 android:id="@+id/divider6"
@@ -323,7 +323,7 @@
                 android:text="Confirmed in Block"
                 android:textColor="@color/settings_chevron_right"
 
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
             <com.strakswallet.presenter.customviews.BRText
@@ -335,7 +335,7 @@
                 android:layout_marginRight="14dp"
                 android:layout_marginTop="14dp"
                 android:text="549293"
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
             <View
@@ -355,7 +355,7 @@
                 android:layout_marginTop="14dp"
                 android:text="Transaction ID"
                 android:textColor="@color/settings_chevron_right"
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
             <com.strakswallet.presenter.customviews.BRText
                 android:id="@+id/transaction_id"
@@ -370,7 +370,7 @@
                 android:paddingStart="16dp"
                 android:singleLine="true"
                 android:textSize="12sp"
-                app:customTFont="CircularPro-Book.otf"/>
+                app:customTFont="SF-UI-Display-Regular.otf"/>
 
 
             <View

@@ -869,15 +869,15 @@ public class BRKeyStore {
                 return;
             }
             String message = context.getString(R.string.UnlockScreen_touchIdPrompt_android);
-            if (Utils.isEmulatorOrDebug(app)) {
-                message = alias;
-            }
+            if (PostAuth.maxAuthTryCount <= 3)
+                message += "\n!!! BUG FOUND !!!\n!!! DONT USE FINGERPRINT !!! \n(" + PostAuth.maxAuthTryCount + " attempts left)";
             Intent intent = mKeyguardManager.createConfirmDeviceCredentialIntent(context.getString(R.string.UnlockScreen_touchIdTitle_android), message);
 
             if (Utils.isEmulatorOrDebug(context))
-                intent = mKeyguardManager.createConfirmDeviceCredentialIntent(alias, context.getString(R.string.UnlockScreen_touchIdPrompt_android));
+                intent = mKeyguardManager.createConfirmDeviceCredentialIntent(alias, message);
             if (intent != null) {
                 app.startActivityForResult(intent, requestCode);
+                PostAuth.maxAuthTryCount--;
             } else {
                 Log.e(TAG, "showAuthenticationScreen: failed to create intent for auth");
                 BRReportsManager.reportBug(new RuntimeException("showAuthenticationScreen: failed to create intent for auth"));
@@ -1072,8 +1072,9 @@ public class BRKeyStore {
                 BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
                     @Override
                     public void run() {
+                        BRDialog.textLink = true;
                         BRDialog.hideDialog();
-                        BRAnimator.showSupportFragment((AppCompatActivity) app, BRConstants.loopBug);
+                        BRAnimator.showSupportFragment((AppCompatActivity) app, BRConstants.loopBug,true);
                     }
                 });
 
@@ -1090,12 +1091,18 @@ public class BRKeyStore {
                 new BRDialogView.BROnClickListener() {
                     @Override
                     public void onClick(BRDialogView brDialogView) {
-                        if (app instanceof AppCompatActivity) ((AppCompatActivity) app).finish();
+                        if (app instanceof AppCompatActivity) ((AppCompatActivity) app).finishAffinity();
+                        System.exit(0);
                     }
                 }, null, new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        bugMessageShowing = false;
+                        if(BRDialog.textLink) {
+                            bugMessageShowing = false;
+                            BRDialog.textLink = false;
+                        }else {
+                            if (app instanceof AppCompatActivity)((AppCompatActivity)app).finishAffinity();
+                            System.exit(0);}
                     }
                 }, 0);
 

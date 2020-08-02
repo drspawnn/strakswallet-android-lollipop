@@ -82,7 +82,7 @@
                         android:text="$16,904.34 per STAK"
                         android:textColor="@color/trans_white"
                         android:textSize="@dimen/sub_header"
-                        app:customTFont="CircularPro-Book.otf"
+                        app:customTFont="SF-UI-Display-Regular.otf"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/currency_label"/>
@@ -97,8 +97,8 @@
                         android:text="@string/CurrencyBalance"
                         android:textColor="@color/trans_white"
                         android:textSize="14sp"
-                        android:visibility="visible"
-                        app:customTFont="CircularPro-Book.otf"
+                        android:visibility="gone"
+                        app:customTFont="SF-UI-Display-Regular.otf"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
@@ -112,7 +112,7 @@
                         android:textColor="@color/trans_white"
                         android:textSize="10sp"
                         android:visibility="gone"
-                        app:customTFont="CircularPro-Book.otf"
+                        app:customTFont="SF-UI-Display-Regular.otf"
                         app:layout_constraintBottom_toBottomOf="@+id/sync_progress"
                         app:layout_constraintEnd_toStartOf="@+id/sync_progress"
                         app:layout_constraintTop_toTopOf="@+id/sync_progress"/>
@@ -146,7 +146,7 @@
                         android:text="$26,495.69"
                         android:textColor="@color/white"
                         android:textSize="28sp"
-                        app:customTFont="CircularPro-Bold.otf"
+                        app:customTFont="SF-UI-Display-Bold.otf"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintVertical_bias="0.492"/>
@@ -175,7 +175,7 @@
                         android:text="1.56739 STAK"
                         android:textColor="@color/trans_white"
                         android:textSize="16sp"
-                        app:customTFont="CircularPro-Book.otf"
+                        app:customTFont="SF-UI-Display-Regular.otf"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/swap"
                         app:layout_constraintRight_toLeftOf="@id/swap"
@@ -279,7 +279,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             app:buttonType="4"
-            app:customTFont="CircularPro-Bold.otf"
+            app:customTFont="SF-UI-Display-Bold.otf"
             app:hasShadow="false"
             app:isBreadButton="true"/>
 
@@ -298,7 +298,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             app:buttonType="4"
-            app:customTFont="CircularPro-Bold.otf"
+            app:customTFont="SF-UI-Display-Bold.otf"
             app:hasShadow="false"
             app:isBreadButton="true"/>
 
@@ -317,7 +317,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             app:buttonType="4"
-            app:customTFont="CircularPro-Bold.otf"
+            app:customTFont="SF-UI-Display-Bold.otf"
             app:hasShadow="false"
             app:isBreadButton="true"/>
 

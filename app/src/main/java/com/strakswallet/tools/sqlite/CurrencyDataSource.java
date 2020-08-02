@@ -81,7 +81,7 @@ public class CurrencyDataSource implements BRDataSourceInterface {
             for (CurrencyEntity c : currencyEntities) {
                 ContentValues values = new ContentValues();
 
-                if (Utils.isNullOrEmpty(c.code) || Utils.isNullOrEmpty(c.name) || c.rate <= 0) {
+                if (Utils.isNullOrEmpty(c.code) || Utils.isNullOrEmpty(c.name)) {
                     failed++;
                     continue;
                 }

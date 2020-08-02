@@ -43,17 +43,7 @@ gradle.properties
 *.ipr
 *~
 *.swp
-.idea/.name
-.idea/workspace.xml
-.idea/libraries
-.idea/vcs.xml
-.idea/gradle.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/compiler.xml
-.idea/runConfigurations.xml
-.idea/copyright/profiles_settings.xml
+.idea/
 .navigation/
 
 # jniLibs files

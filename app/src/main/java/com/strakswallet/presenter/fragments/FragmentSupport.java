@@ -30,6 +30,7 @@ import com.platform.HTTPServer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 import static com.platform.HTTPServer.URL_SUPPORT;
 
@@ -67,6 +68,7 @@ public class FragmentSupport extends Fragment {
     String theUrl;
     public static boolean appVisible = false;
     private String onCloseUrl;
+    private Boolean exitOnClose;
 
     @Override
 
@@ -108,7 +110,11 @@ public class FragmentSupport extends Fragment {
 
         theUrl = URL_SUPPORT;
         HTTPServer.mode = HTTPServer.ServerMode.SUPPORT;
-        String articleId = getArguments() == null ? null : getArguments().getString("articleId");
+        String articleId;
+        Bundle bundle = getArguments();
+        if (bundle == null) {articleId = null; exitOnClose = false;}
+        else {articleId = bundle.getString("articleId");
+            exitOnClose = bundle.getBoolean("exitOnClose");}
         if (Utils.isNullOrEmpty(theUrl)) throw new IllegalArgumentException("No url extra!");
 
         WebSettings webSettings = webView.getSettings();
@@ -118,6 +124,7 @@ public class FragmentSupport extends Fragment {
         }
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setUserAgentString(String.valueOf(Locale.ENGLISH));
 
         if (articleId != null && !articleId.isEmpty())
             theUrl = theUrl + "/article?slug=" + articleId;
@@ -151,6 +158,7 @@ public class FragmentSupport extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if(exitOnClose) {getActivity().finishAffinity(); System.exit(0);}
         BRAnimator.animateBackgroundDim(backgroundLayout, true);
         BRAnimator.animateSignalSlide(signalLayout, true, new BRAnimator.OnSlideAnimationEnd() {
             @Override

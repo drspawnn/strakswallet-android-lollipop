@@ -40,7 +40,7 @@ import java.util.Locale;
 
 public class CurrencyUtils {
     public static final String TAG = CurrencyUtils.class.getName();
-
+    public static final int DefaultFractionDigits = 5;
 
     /**
      *
@@ -55,8 +55,8 @@ public class CurrencyUtils {
 //        Log.e(TAG, "amount: " + amount);
         DecimalFormat currencyFormat;
 
-        // This formats currency values as the user expects to read them (default locale).
-        currencyFormat = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.getDefault());
+        // This formats currency values as the user expects to read them (en locale).
+        currencyFormat = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.forLanguageTag("en"));
         // This specifies the actual currency that the value is in, and provide
         // s the currency symbol.
         DecimalFormatSymbols decimalFormatSymbols;
@@ -80,7 +80,8 @@ public class CurrencyUtils {
         decimalFormatSymbols.setCurrencySymbol(symbol);
 //        currencyFormat.setMaximumFractionDigits(decimalPoints);
         currencyFormat.setGroupingUsed(true);
-        currencyFormat.setMaximumFractionDigits(currency != null ? currency.getDefaultFractionDigits() : wallet.getMaxDecimalPlaces(app));
+//        currencyFormat.setMaximumFractionDigits(currency != null ? currency.getDefaultFractionDigits() : wallet.getMaxDecimalPlaces(app));
+        currencyFormat.setMaximumFractionDigits(currency != null ? DefaultFractionDigits : wallet.getMaxDecimalPlaces(app));
         currencyFormat.setDecimalFormatSymbols(decimalFormatSymbols);
         currencyFormat.setNegativePrefix(decimalFormatSymbols.getCurrencySymbol() + "-");
         currencyFormat.setNegativeSuffix("");
@@ -115,7 +116,7 @@ public class CurrencyUtils {
         BaseWalletManager wallet = WalletsMaster.getInstance(app).getWalletByIso(app, iso);
         if (wallet == null) {
             Currency currency = Currency.getInstance(iso);
-            return currency.getDefaultFractionDigits();
+            return DefaultFractionDigits;//currency.getDefaultFractionDigits();
         } else {
             return wallet.getMaxDecimalPlaces(app);
         }

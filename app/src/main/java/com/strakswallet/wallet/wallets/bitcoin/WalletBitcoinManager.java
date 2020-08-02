@@ -217,14 +217,14 @@ public class WalletBitcoinManager extends BRCoreWalletManager implements BaseWal
 ////            Log.e(TAG, "updateFee: " + getIso(app) + ":" + fee + "|" + economyFee);
 //
 //            if (fee != 0 && fee < getWallet().getMaxFeePerKb()) {
-                BRSharedPrefs.putFeePerKb(app, getIso(app), fee);
-                getWallet().setFeePerKb(BRSharedPrefs.getFavorStandardFee(app, getIso(app)) ? fee : economyFee);
-                BRSharedPrefs.putFeeTime(app, getIso(app), System.currentTimeMillis()); //store the time of the last successful fee fetch
+        BRSharedPrefs.putFeePerKb(app, getIso(app), fee);
+        getWallet().setFeePerKb(BRSharedPrefs.getFavorStandardFee(app, getIso(app)) ? fee : economyFee);
+        BRSharedPrefs.putFeeTime(app, getIso(app), System.currentTimeMillis()); //store the time of the last successful fee fetch
 //            } else {
 //                FirebaseCrash.report(new NullPointerException("Fee is weird:" + fee));
 //            }
 //            if (economyFee != 0 && economyFee < getWallet().getMaxFeePerKb()) {
-                BRSharedPrefs.putEconomyFeePerKb(app, getIso(app), economyFee);
+        BRSharedPrefs.putEconomyFeePerKb(app, getIso(app), economyFee);
 //            } else {
 //                FirebaseCrash.report(new NullPointerException("Economy fee is weird:" + economyFee));
 //            }
@@ -747,20 +747,19 @@ public class WalletBitcoinManager extends BRCoreWalletManager implements BaseWal
                     String formatted = String.format("%s (%s)", am, amCur);
                     final String strToShow = String.format(ctx.getString(R.string.TransactionDetails_received), formatted);
 
-                    new Handler().postDelayed(new Runnable() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
                             if (!BRToast.isToastShown()) {
                                 if (Utils.isEmulatorOrDebug(ctx))
-                                    Toast.makeText(ctx,strToShow,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, strToShow, Toast.LENGTH_SHORT).show();
                                 else
                                     BRToast.showCustomToast(ctx, strToShow,
                                             10, Toast.LENGTH_LONG, R.drawable.toast_layout_black);
-
-                                BRNotificationManager.sendNotification((AppCompatActivity) ctx, R.drawable.notification_icon, ctx.getString(R.string.app_name), strToShow, 1);
                             }
+                            BRNotificationManager.sendNotification((AppCompatActivity) ctx, R.drawable.notification_icon, ctx.getString(R.string.app_name), strToShow, 1);
                         }
-                    }, 500);
+                    });
 
 
                 }

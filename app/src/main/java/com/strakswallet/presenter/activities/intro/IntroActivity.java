@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 
 import com.strakswallet.BuildConfig;
 import com.strakswallet.R;
-import com.strakswallet.core.BRCoreMasterPubKey;
 import com.strakswallet.presenter.activities.HomeActivity;
 import com.strakswallet.presenter.activities.SetPinActivity;
 import com.strakswallet.presenter.activities.util.BRActivity;
@@ -21,6 +20,7 @@ import com.strakswallet.presenter.customviews.BRDialogView;
 import com.strakswallet.tools.animation.BRAnimator;
 import com.strakswallet.tools.animation.BRDialog;
 import com.strakswallet.tools.manager.BRReportsManager;
+import com.strakswallet.tools.manager.BRSharedPrefs;
 import com.strakswallet.tools.security.BRKeyStore;
 import com.strakswallet.tools.security.PostAuth;
 import com.strakswallet.tools.security.SmartValidator;
@@ -103,6 +103,7 @@ public class IntroActivity extends BRActivity implements Serializable {
 
         }
         else{
+            BRSharedPrefs.putSecureTime(this, System.currentTimeMillis());
             newWalletButton = (Button) findViewById(R.id.button_new_wallet);
             recoverWalletButton = (Button) findViewById(R.id.button_recover_wallet);
 //            splashScreen = findViewById(R.id.splash_screen);
@@ -150,17 +151,6 @@ public class IntroActivity extends BRActivity implements Serializable {
 //            }, 1000);
         }
 
-    }
-
-    // Results from SecuritySettingsActivity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
-            case 1:
-                // Check canary again
-                PostAuth.getInstance().onCanaryCheck(this, false);
-                break;
-        }
     }
 
     private void updateBundles() {

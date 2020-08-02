@@ -47,7 +47,7 @@
     <com.strakswallet.presenter.customviews.BRButton
         android:id="@+id/dialog_home_button"
         app:buttonType="4"
-        app:customTFont="CircularPro-Bold.otf"
+        app:customTFont="SF-UI-Display-Bold.otf"
         app:hasShadow="false"
         app:isBreadButton="true"
         android:text="@string/Dialog.Home"
@@ -59,7 +59,7 @@
         <com.strakswallet.presenter.customviews.BRButton
             android:id="@+id/dialog_dismiss_button"
             app:buttonType="4"
-            app:customTFont="CircularPro-Bold.otf"
+            app:customTFont="SF-UI-Display-Bold.otf"
             app:hasShadow="false"
             app:isBreadButton="true"
             android:text="@string/Dialog.Dismiss"

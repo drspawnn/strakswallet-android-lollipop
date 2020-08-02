@@ -91,8 +91,9 @@ public class WriteDownActivity extends BRActivity {
 
     private void close() {
         Log.e(TAG, "close: ");
-        BRAnimator.startBreadActivity(this, false);
-        overridePendingTransition(R.anim.fade_up, R.anim.exit_to_bottom);
+        if (getIntent().getBooleanExtra("firstStart", false))
+            BRAnimator.startBreadActivity(this, false);
+        overridePendingTransition(R.anim.enter_from_bottom, R.anim.exit_to_bottom);
         if (!isDestroyed()) finish();
         //additional code
     }

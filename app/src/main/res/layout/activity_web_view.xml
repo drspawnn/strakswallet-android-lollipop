@@ -41,7 +41,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="Simplex Checkout"
                 android:textColor="@color/black"
-                app:customTFont="CircularPro-Bold.otf"/>
+                app:customTFont="SF-UI-Display-Bold.otf"/>
 
 
             <com.strakswallet.presenter.customviews.BRText
@@ -53,7 +53,7 @@
                 android:paddingEnd="8dp"
                 android:text="Close"
                 android:textColor="@color/button_primary_normal"
-                app:customTFont="CircularPro-Bold.otf"/>
+                app:customTFont="SF-UI-Display-Bold.otf"/>
 
 
         </RelativeLayout>

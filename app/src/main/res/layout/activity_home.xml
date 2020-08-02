@@ -57,7 +57,7 @@
                 android:layout_marginRight="@dimen/activity_vertical_margin"
                 android:text="@string/TotalAssets"
                 android:textColor="@color/total_assets_label_color"
-                app:customTFont="CircularPro-Book.otf" />
+                app:customTFont="SF-UI-Display-Regular.otf" />
 
             <com.strakswallet.presenter.customviews.BRText
                 android:id="@+id/total_assets_usd"
@@ -69,7 +69,7 @@
                 android:text="$42,895.47"
                 android:textColor="@color/total_assets_usd_color"
                 android:textSize="28sp"
-                app:customTFont="CircularPro-Bold.otf" />
+                app:customTFont="SF-UI-Display-Bold.otf" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/prompt_card"
@@ -97,7 +97,7 @@
                         android:text="Paper Key - Action Required!"
                         android:textColor="@color/almost_black"
                         android:textSize="16sp"
-                        app:customTFont="CircularPro-Bold.otf" />
+                        app:customTFont="SF-UI-Display-Bold.otf" />
 
                     <com.strakswallet.presenter.customviews.BRText
                         android:id="@+id/prompt_description"
@@ -132,7 +132,7 @@
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             app:buttonType="4"
-                            app:customTFont="CircularPro-Bold.otf"
+                            app:customTFont="SF-UI-Display-Bold.otf"
                             app:hasShadow="false"
                             app:isBreadButton="true" />
 
@@ -148,7 +148,7 @@
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             app:buttonType="4"
-                            app:customTFont="CircularPro-Bold.otf"
+                            app:customTFont="SF-UI-Display-Bold.otf"
                             app:hasShadow="false"
                             app:isBreadButton="true" />
 
@@ -221,7 +221,7 @@
                     android:paddingBottom="4dp"
                     android:text="@string/MenuButton.settings"
                     android:textSize="16sp"
-                    app:customTFont="CircularPro-Book.otf" />
+                    app:customTFont="SF-UI-Display-Regular.otf" />
 
 
                 <ImageButton
@@ -261,7 +261,7 @@
                     android:paddingBottom="4dp"
                     android:text="@string/MenuButton.security"
                     android:textSize="16sp"
-                    app:customTFont="CircularPro-Book.otf" />
+                    app:customTFont="SF-UI-Display-Regular.otf" />
 
 
                 <ImageButton
@@ -302,7 +302,7 @@
                     android:paddingBottom="4dp"
                     android:text="@string/MenuButton.support"
                     android:textSize="16sp"
-                    app:customTFont="CircularPro-Book.otf" />
+                    app:customTFont="SF-UI-Display-Regular.otf" />
 
                 <ImageButton
                     android:id="@+id/support_arrow_right"

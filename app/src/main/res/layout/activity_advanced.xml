@@ -20,7 +20,7 @@
         android:textColor="@color/total_assets_usd_color"
         android:layout_alignParentRight="true"
         android:textSize="28sp"
-        app:customTFont="CircularPro-Bold.otf" />
+        app:customTFont="SF-UI-Display-Bold.otf" />
 
 
     <android.support.v7.widget.Toolbar
@@ -47,7 +47,7 @@
                 android:layout_marginLeft="20dp"
                 android:text="Settings"
                 android:textSize="16sp"
-                app:customTFont="CircularPro-Bold.otf" />
+                app:customTFont="SF-UI-Display-Bold.otf" />
 
 
         </LinearLayout>

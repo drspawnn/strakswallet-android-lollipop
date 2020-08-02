@@ -33,7 +33,7 @@
             android:text="@string/VerifyPin.title"
             android:textColor="@color/almost_black"
             android:textSize="22sp"
-            app:customTFont="CircularPro-Bold.otf"/>
+            app:customTFont="SF-UI-Display-Bold.otf"/>
 
         <com.strakswallet.presenter.customviews.BRText
             android:id="@+id/message"
@@ -49,9 +49,9 @@
             android:id="@+id/pinLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_below="@+id/message"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
             <View

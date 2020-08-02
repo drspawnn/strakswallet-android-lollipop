@@ -89,7 +89,7 @@
                     android:textColor="@color/light_gray"
                     android:textSize="@dimen/paragraph"
                     app:buttonType="2"
-                    app:customBFont="CircularPro-Book.otf"
+                    app:customBFont="SF-UI-Display-Regular.otf"
                     app:isBreadButton="true" />
             </LinearLayout>
 
@@ -109,7 +109,7 @@
                     android:textColor="@color/light_gray"
                     android:textSize="@dimen/paragraph"
                     app:buttonType="2"
-                    app:customBFont="CircularPro-Book.otf"
+                    app:customBFont="SF-UI-Display-Regular.otf"
                     app:isBreadButton="true" />
             </LinearLayout>
 
@@ -129,7 +129,7 @@
                     android:textColor="@color/light_gray"
                     android:textSize="@dimen/paragraph"
                     app:buttonType="2"
-                    app:customBFont="CircularPro-Book.otf"
+                    app:customBFont="SF-UI-Display-Regular.otf"
                     app:isBreadButton="true" />
             </LinearLayout>
 
@@ -149,7 +149,7 @@
                     android:textColor="@color/light_gray"
                     android:textSize="@dimen/paragraph"
                     app:buttonType="2"
-                    app:customBFont="CircularPro-Book.otf"
+                    app:customBFont="SF-UI-Display-Regular.otf"
                     app:isBreadButton="true" />
             </LinearLayout>
 

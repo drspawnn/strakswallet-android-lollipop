@@ -120,7 +120,7 @@ public class BreadApp extends Application {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
+//    @TargetApi(Build.VERSION_CODES.N)
     public String getCurrentLocale(Context ctx) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return ctx.getResources().getConfiguration().getLocales().get(0).getLanguage();
@@ -147,7 +147,14 @@ public class BreadApp extends Application {
 
     public static void fireListeners() {
         if (listeners == null) return;
-        for (OnAppBackgrounded lis : listeners) lis.onBackgrounded();
+//        for (OnAppBackgrounded lis : listeners) lis.onBackgrounded();
+        //ConcurrentModificationException
+        for (int i = 0; i < listeners.size(); i++) {
+            OnAppBackgrounded lis = listeners.get(i);
+            if (lis != null) {
+                lis.onBackgrounded();
+            }
+        }
     }
 
     public static void addOnBackgroundedListener(OnAppBackgrounded listener) {

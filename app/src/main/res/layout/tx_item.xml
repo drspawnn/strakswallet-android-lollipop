@@ -16,7 +16,7 @@
         android:text="Dec 2"
         android:textColor="@color/total_assets_usd_color"
         android:textSize="15sp"
-        app:customTFont="CircularPro-Book.otf" />
+        app:customTFont="SF-UI-Display-Regular.otf" />
 
 
     <com.strakswallet.presenter.customviews.BRText
@@ -42,7 +42,7 @@
         android:layout_marginRight="12dp"
         android:text="-$839.30"
         android:textSize="16sp"
-        app:customTFont="CircularPro-Bold.otf"/>
+        app:customTFont="SF-UI-Display-Bold.otf"/>
 
     <ProgressBar
         android:id="@+id/tx_progress"

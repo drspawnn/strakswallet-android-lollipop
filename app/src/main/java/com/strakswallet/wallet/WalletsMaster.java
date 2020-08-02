@@ -296,7 +296,7 @@ public class WalletsMaster {
                         public void onClick(BRDialogView brDialogView) {
                             //Start security settings for user
                             Intent intent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
-                            app.startActivityForResult(intent,1);
+                            app.startActivityForResult(intent,BRConstants.SECURITY_SETTINGS_REQUEST);
                             brDialogView.dismiss();
                         }
                     }, new BRDialogView.BROnClickListener() {

@@ -68,6 +68,7 @@ public class SetPinActivity extends BRActivity {
                 handleClick(key);
             }
         });
+        keyboard.setBRButtonBackgroundResId(R.drawable.keyboard_white_button);
         keyboard.setShowDot(false);
         BRSharedPrefs.putGreetingsShown(this, true);
 

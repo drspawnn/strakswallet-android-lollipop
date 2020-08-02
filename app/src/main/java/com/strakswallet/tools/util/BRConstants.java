@@ -62,6 +62,8 @@ public class BRConstants {
     public static final int SCANNER_REQUEST = 201;
     public static final int SCANNER_BCH_REQUEST = 202;
     public static final int REQUEST_IMAGE_CAPTURE = 203;
+    public static final int CAMERA_SETTINGS_REQUEST = 204;
+    public static final int SECURITY_SETTINGS_REQUEST = 205;
 
     public static final String CANARY_STRING = "canary";
 //    public static final String FIRST_ADDRESS = "firstAddress";

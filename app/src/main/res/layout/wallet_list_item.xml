@@ -16,7 +16,7 @@
         android:layout_marginTop="16sp"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:customTFont="CircularPro-Bold.otf"/>
+        app:customTFont="SF-UI-Display-Bold.otf"/>
 
     <com.strakswallet.presenter.customviews.BRText
         android:id="@+id/wallet_trade_price"
@@ -26,7 +26,7 @@
         android:layout_marginLeft="16sp"
         android:textColor="@color/currency_subheading_color"
         android:textSize="16sp"
-        app:customTFont="CircularPro-Book.otf"/>
+        app:customTFont="SF-UI-Display-Regular.otf"/>
 
     <com.strakswallet.presenter.customviews.BRText
         android:id="@+id/wallet_balance_usd"
@@ -39,7 +39,7 @@
         android:text="$12.00"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:customTFont="CircularPro-Bold.otf"/>
+        app:customTFont="SF-UI-Display-Bold.otf"/>
 
     <com.strakswallet.presenter.customviews.BRText
         android:id="@+id/syncing_label"
@@ -52,10 +52,10 @@
         android:text="Syncing"
         android:textColor="#88ffffff"
         android:textSize="10sp"
-        app:customTFont="CircularPro-Bold.otf"/>
+        app:customTFont="SF-UI-Display-Bold.otf"/>
 
     <ProgressBar
-        android:id="@+id/sync_progress"
+        android:id="@+id/sync_progress_list_item"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="30dp"
         android:layout_height="3dp"
@@ -80,6 +80,6 @@
         android:layout_marginRight="16sp"
         android:textColor="@color/currency_subheading_color"
         android:textSize="16sp"
-        app:customTFont="CircularPro-Book.otf"/>
+        app:customTFont="SF-UI-Display-Regular.otf"/>
 
 </RelativeLayout>

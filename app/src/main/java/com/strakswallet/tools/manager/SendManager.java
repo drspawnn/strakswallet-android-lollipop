@@ -433,11 +433,11 @@ public class SendManager {
         String formattedTotal = CurrencyUtils.getFormattedAmount(ctx, iso, wallet.getFiatForSmallestCrypto(ctx, new BigDecimal(total), null));
 
         //formatted text
-        return receiver + "\n\n"
+        return receiver + "\n"
                 + ctx.getString(R.string.Confirmation_amountLabel) + " " + formattedCryptoAmount + " (" + formattedAmount + ")"
                 + "\n" + ctx.getString(R.string.Confirmation_feeLabel) + " " + formatterCryptoFee + " (" + formattedFee + ")"
                 + "\n" + ctx.getString(R.string.Confirmation_totalLabel) + " " + formatterCryptoTotal + " (" + formattedTotal + ")"
-                + (request.message == null ? "" : "\n\n" + request.message);
+                + (request.message == null ? "" : "\n" + request.message);
     }
 
 }

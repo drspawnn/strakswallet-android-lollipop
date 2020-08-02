@@ -96,25 +96,36 @@ public class DisabledActivity extends BRActivity {
 //        Log.e(TAG, "onResume: disabledUntil: " + disabledUntil + ", diff: " + (disabledUntil - BRSharedPrefs.getSecureTime(this)));
         long disabledTime = disabledUntil - System.currentTimeMillis();
         int seconds = (int) disabledTime / 1000;
-        timer = new CountDownTimer(seconds * 1000, 1000) {
+        int ms = (int) disabledTime % 1000;
+        timer = new CountDownTimer((disabledTime + 999), 1000) {
             public void onTick(long millisUntilFinished) {
-                long durationSeconds = (millisUntilFinished / 1000);
+                long durationSeconds = (millisUntilFinished / 1000) - 1;
                 untilLabel.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", durationSeconds / 3600,
                         (durationSeconds % 3600) / 60, (durationSeconds % 60)));
+                if (durationSeconds == 0)
+                {
+                    this.cancel();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refresh();
+                        }
+                    },50);
+                }
             }
 
-            public void onFinish() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        refresh();
-                    }
-                }, 2000);
-                long durationSeconds = 0;
-                untilLabel.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", durationSeconds / 3600,
-                        (durationSeconds % 3600) / 60, (durationSeconds % 60)));
+            // onFinish is lagy
+            public void onFinish() { }
+        };
+        if(ms>550) seconds++;
+        untilLabel.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", seconds / 3600,(seconds % 3600) / 60, (seconds % 60)));
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timer.start();
             }
-        }.start();
+        },ms);
     }
 
     @Override

@@ -27,3 +27,8 @@ ___________________________________________________________
 7. Initialize the submodules - <code>git submodule init</code>
 8. Update the submodules - <code>git submodule update</code>
 9. Build -> Rebuild Project
+
+___________________________________________________________
+
+#### :beers: Donation :beers:
+SP3PgM6ujcNPML6qfGjzsodDF46VtC55Jw

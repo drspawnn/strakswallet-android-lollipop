@@ -80,6 +80,7 @@ public class BRAnimator {
     public static float t1Size;
     public static float t2Size;
     public static boolean supportIsShowing;
+    public static boolean supportExitOnClose;
 
     public static void showBreadSignal(AppCompatActivity activity, String title, String iconDescription, int drawableId, BROnSignalCompletion completion) {
         fragmentSignal = new FragmentSignal();
@@ -158,6 +159,10 @@ public class BRAnimator {
         }
 
     }
+    public static void showSupportFragment(AppCompatActivity app, String articleId, Boolean exitOnClose) {
+        supportExitOnClose = exitOnClose;
+        showSupportFragment(app,articleId);
+    }
 
     public static void showSupportFragment(AppCompatActivity app, String articleId) {
         if (supportIsShowing) return;
@@ -176,6 +181,7 @@ public class BRAnimator {
             if (articleId != null && !articleId.isEmpty()) {
                 Bundle bundle = new Bundle();
                 bundle.putString("articleId", articleId);
+                bundle.putBoolean("exitOnClose", supportExitOnClose);
                 fragmentSupport.setArguments(bundle);
             }
             app.getSupportFragmentManager().beginTransaction()

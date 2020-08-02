@@ -1,5 +1,6 @@
 package com.strakswallet.presenter.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -98,8 +99,9 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
         mPromptDescription = findViewById(R.id.prompt_description);
         mPromptContinue = findViewById(R.id.continue_button);
         mPromptDismiss = findViewById(R.id.dismiss_button);
+        PromptManager.getInstance().nextPrompt_ID = 0;
 
-        mAdapter = new WalletListAdapter(this, walletList);
+        mAdapter = new WalletListAdapter((Activity)this, walletList);
 
         mWalletRecycler.setLayoutManager(new LinearLayoutManager(this));
         mWalletRecycler.setAdapter(mAdapter);
@@ -180,6 +182,8 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
             @Override
             public void onClick(View v) {
                 hidePrompt();
+                PromptManager.getInstance().nextPrompt_ID++;
+                showNextPromptIfNeeded();
             }
         });
 
@@ -223,8 +227,13 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
             mPromptDescription.setText(promptInfo.description);
             mPromptContinue.setOnClickListener(promptInfo.listener);
 
+            if (toShow == PromptManager.PromptItem.FINGER_PRINT || toShow == PromptManager.PromptItem.PAPER_KEY)
+                mPromptDismiss.setText("Later");
+            else mPromptDismiss.setText("Dismiss");
+
         } else {
             Log.i(TAG, "showNextPrompt: nothing to show");
+            hidePrompt();
         }
     }
 
@@ -324,8 +333,6 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
                 mNotificationBar.setVisibility(View.VISIBLE);
 
         }
-
-
     }
 
     public void closeNotificationBar() {
@@ -335,7 +342,14 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
 
     @Override
     public boolean onProgressUpdated(double progress) {
-        Log.e(TAG, "onProgressUpdated: " + progress);
-        return false;
+        Log.d(TAG, "onProgressUpdated_Home: " + String.valueOf(progress));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        if(progress < 1.0f) return false;
+        else return true;
     }
 }

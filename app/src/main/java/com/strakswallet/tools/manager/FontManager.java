@@ -63,7 +63,7 @@ public class FontManager {
     }
 
     public static boolean setCustomFont(Context ctx, TextView v, String asset) {
-        //make CircularPro-Book.otf default
+        //make SF-UI-Display-Regular.otf default
         Typeface tf = FontManager.get(ctx,  asset);
         v.setTypeface(tf);
         return true;

@@ -11,8 +11,8 @@ android {
         maxSdkVersion 22
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
-        versionCode 104
-        versionName "1.0.4"
+        versionCode 110
+        versionName "1.1.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
@@ -89,6 +89,22 @@ android {
 
         }
 
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def project = "STRAKSwallet-AndroidL"
+            def SEP = "-"
+            def flavor = variant.productFlavors[0].name
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+            def date = new Date();
+            def formattedDate = date.format('yyyyMMdd')
+
+            def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
+
+            outputFileName = new File(newApkName)
+        }
     }
 
     lintOptions {

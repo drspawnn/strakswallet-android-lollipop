@@ -43,6 +43,7 @@ import com.strakswallet.presenter.customviews.BRSearchBar;
 import com.strakswallet.presenter.customviews.BRText;
 import com.strakswallet.tools.animation.BRAnimator;
 import com.strakswallet.tools.animation.BRDialog;
+import com.strakswallet.tools.manager.BRApiManager;
 import com.strakswallet.tools.manager.BRSharedPrefs;
 import com.strakswallet.tools.manager.FontManager;
 import com.strakswallet.tools.manager.InternetManager;
@@ -220,12 +221,8 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
         // Check if the "Twilight" screen altering app is currently running
         if (checkIfScreenAlteringAppIsRunning("com.urbandroid.lux")) {
-
             BRDialog.showSimpleDialog(this, getString(R.string.Dialog_screenAlteringTitle), getString(R.string.Dialog_screenAlteringMessage));
-
-
         }
-
     }
 
     @Override
@@ -249,6 +246,36 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
             //handle external click with crypto scheme
             CryptoUriParser.processRequest(this, data.toString(), WalletsMaster.getInstance(this).getCurrentWallet(this));
         }
+    }
+
+    private void updateBalances()
+    {
+        final BaseWalletManager wallet = WalletsMaster.getInstance(this).getCurrentWallet(this);
+//        String fiatExchangeRate = CurrencyUtils.getFormattedAmount(this, BRSharedPrefs.getPreferredFiatIso(this), wallet.getFiatExchangeRate(this));
+        String fiatBalance = CurrencyUtils.getFormattedAmount(this, BRSharedPrefs.getPreferredFiatIso(this), wallet.getFiatBalance(this));
+        String cryptoBalance = CurrencyUtils.getFormattedAmount(this, wallet.getIso(this), new BigDecimal(wallet.getCachedBalance(this)));
+
+//        mCurrencyPriceUsd.setText(String.format("%s per %s", fiatExchangeRate, wallet.getIso(this)));
+        mBalancePrimary.setText(fiatBalance);
+        mBalanceSecondary.setText(cryptoBalance);
+    }
+
+    private void updateExchangeRate()
+    {
+        final BaseWalletManager wallet = WalletsMaster.getInstance(this).getCurrentWallet(this);
+        String fiatExchangeRate = CurrencyUtils.getFormattedAmount(this, BRSharedPrefs.getPreferredFiatIso(this), wallet.getFiatExchangeRate(this));
+        mCurrencyPriceUsd.setText(String.format("%s per %s", fiatExchangeRate, wallet.getIso(this)));
+    }
+
+    private void updateTxList()
+    {
+        TxManager.getInstance().updateTxList(WalletActivity.this);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateBalances();
+            }
+        });
     }
 
     private void updateUi() {
@@ -295,14 +322,11 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
 //        String fiatIso = BRSharedPrefs.getPreferredFiatIso(this);
 
-        String fiatExchangeRate = CurrencyUtils.getFormattedAmount(this, BRSharedPrefs.getPreferredFiatIso(this), wallet.getFiatExchangeRate(this));
-        String fiatBalance = CurrencyUtils.getFormattedAmount(this, BRSharedPrefs.getPreferredFiatIso(this), wallet.getFiatBalance(this));
-        String cryptoBalance = CurrencyUtils.getFormattedAmount(this, wallet.getIso(this), new BigDecimal(wallet.getCachedBalance(this)));
-
         mCurrencyTitle.setText(wallet.getName(this));
-        mCurrencyPriceUsd.setText(String.format("%s per %s", fiatExchangeRate, wallet.getIso(this)));
-        mBalancePrimary.setText(fiatBalance);
-        mBalanceSecondary.setText(cryptoBalance);
+
+        updateBalances();
+        updateExchangeRate();
+
         mToolbar.setBackgroundColor(Color.parseColor(wallet.getUiConfiguration().colorHex));
         mSendButton.setColor(Color.parseColor(wallet.getUiConfiguration().colorHex));
         mBuyButton.setColor(Color.parseColor(wallet.getUiConfiguration().colorHex));
@@ -442,7 +466,11 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
                 public void onTransitionResume(Transition transition) {
                 }
             });
-            TransitionManager.beginDelayedTransition(toolBarConstraintLayout,mySwapTransition);}
+            TransitionManager.beginDelayedTransition(toolBarConstraintLayout,mySwapTransition);
+            TxManager.getInstance().updateTxList(WalletActivity.this);
+            updateTxList();
+        }
+
         int px8 = Utils.getPixelsFromDps(this, 8);
         int px16 = Utils.getPixelsFromDps(this, 16);
 //
@@ -513,13 +541,12 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
         if (!cryptoPreferred) {
             mBalanceSecondary.setTextColor(ContextCompat.getColor(this,R.color.currency_subheading_color));
             mBalancePrimary.setTextColor(ContextCompat.getColor(this,R.color.white));
-            mBalanceSecondary.setTypeface(FontManager.get(this, "CircularPro-Book.otf"));
+            mBalanceSecondary.setTypeface(FontManager.get(this, "SF-UI-Display-Regular.otf"));
 
         } else {
             mBalanceSecondary.setTextColor(ContextCompat.getColor(this,R.color.white));
             mBalancePrimary.setTextColor(ContextCompat.getColor(this,R.color.currency_subheading_color));
-            mBalanceSecondary.setTypeface(FontManager.get(this, "CircularPro-Bold.otf"));
-
+            mBalanceSecondary.setTypeface(FontManager.get(this, "SF-UI-Display-Bold.otf"));
         }
 
 //        long delay = 0; // if animation false, dont wait
@@ -530,6 +557,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 //                    @Override
 //                    public void run() {
 //                        TxManager.getInstance().updateTxList(WalletActivity.this);
+//                        updateTxList();
 //                    }
 //                },delay);
     }
@@ -553,6 +581,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
                     @Override
                     public void run() {
                         TxManager.getInstance().updateTxList(WalletActivity.this);
+                        updateTxList();
                     }
                 });
             }
@@ -568,6 +597,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
                     @Override
                     public void run() {
                         TxManager.getInstance().updateTxList(WalletActivity.this);
+                        updateTxList();
                     }
                 });
 
@@ -590,7 +620,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
             @Override
             public void syncStarted() {
-                SyncManager.getInstance().startSyncing(WalletActivity.this, wallet, WalletActivity.this);
+//                SyncManager.getInstance().startSyncing(WalletActivity.this, wallet, WalletActivity.this);
             }
         });
 
@@ -598,6 +628,12 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
 
         handleUrlClickIfNeeded(getIntent());
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SyncManager.getInstance().stopSyncing();
     }
 
     @Override
@@ -673,6 +709,7 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
             @Override
             public void run() {
                 if (hash != null) TxManager.getInstance().updateTxList(WalletActivity.this);
+                updateTxList();
             }
         });
 
@@ -681,20 +718,35 @@ public class WalletActivity extends BRActivity implements InternetManager.Connec
     @Override
     public boolean onProgressUpdated(double progress) {
         mProgressBar.setProgress((int) (progress * 100));
-        if (progress == 1) {
-            mProgressBar.setVisibility(View.GONE);
-            mProgressLabel.setVisibility(View.GONE);
-            mBalanceLabel.setVisibility(View.VISIBLE);
-            mProgressBar.invalidate();
+        if (mProgressBar.getProgress() == 100) {
+            if( mProgressBar.getVisibility() == View.VISIBLE)
+            {
+                mProgressBar.setVisibility(View.GONE);
+                mProgressLabel.setVisibility(View.GONE);
+                mBalanceLabel.setVisibility(View.VISIBLE);
+                mProgressBar.invalidate();
+            }
             return false;
         }
-        mBalanceLabel.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
-        mProgressLabel.setVisibility(View.VISIBLE);
-        mProgressBar.invalidate();
+        if( mProgressBar.getVisibility() == View.GONE)
+        {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressLabel.setVisibility(View.VISIBLE);
+            mBalanceLabel.setVisibility(View.GONE);
+            mProgressBar.invalidate();
+        }
         return true;
     }
 
+    @Override
+    public void OnRateUpdate() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateExchangeRate();
+            }
+        });
+    }
 
     //test logger
     class TestLogger extends Thread {

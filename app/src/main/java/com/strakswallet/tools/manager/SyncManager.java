@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ProgressBar;
 
@@ -45,7 +46,7 @@ public class SyncManager {
 
     //todo refactor this task to have a list of unique tasks (multiple UI syncing)
     private static SyncProgressTask syncTask;
-    public boolean running;
+    public boolean running=false;
     private String mCurrentThreadName;
     private BaseWalletManager mWallet;
     //    private final Object lock = new Object();
@@ -72,19 +73,23 @@ public class SyncManager {
     }
 
     public synchronized void stopSyncing() {
-        if (syncTask != null) {
-            syncTask.interrupt();
-        }
+        if (running)
+            if (syncTask != null) {
+                running = false;
+                syncTask.interrupt();
+            }
     }
 
-    public synchronized void startSyncing(final Context app, BaseWalletManager walletManager, OnProgressUpdate listener) {
-        mWallet = walletManager;
+    public synchronized void startSyncing(final AppCompatActivity app, BaseWalletManager walletManager, OnProgressUpdate listener) {
+        if(!running)
+        {
+            mWallet = walletManager;
+            if (syncTask != null) syncTask.interrupt();
 
-        if (syncTask != null) syncTask.interrupt();
-
-        syncTask = new SyncProgressTask(app, walletManager, listener);
-        syncTask.start();
-
+            running = true;
+            syncTask = new SyncProgressTask(app, walletManager, listener);
+            syncTask.start();
+        }
     }
 
     class SyncProgressTask extends Thread {
@@ -92,9 +97,9 @@ public class SyncManager {
         private BaseWalletManager mCurrentWallet;
         private OnProgressUpdate mListener;
         private static final int DELAY_MILLIS = 500;
-        private Context mApp;
+        private AppCompatActivity mApp;
 
-        public SyncProgressTask(Context app, BaseWalletManager currentWallet, OnProgressUpdate listener) {
+        public SyncProgressTask(AppCompatActivity app, BaseWalletManager currentWallet, OnProgressUpdate listener) {
             mCurrentWallet = currentWallet;
             mListener = listener;
             mApp = app;
@@ -102,34 +107,30 @@ public class SyncManager {
 
         @Override
         public void run() {
-//            Log.e(TAG, "SyncProgressTask: started: " + Thread.currentThread());
-            try {
-                mCurrentThreadName = getName();
-                while (!isInterrupted() && mCurrentThreadName.equalsIgnoreCase(getName())) {
-                    final double syncProgress = mCurrentWallet.getPeerManager().getSyncProgress(BRSharedPrefs.getStartHeight(mApp, mCurrentWallet.getIso(mApp)));
-                    if (!mCurrentThreadName.equalsIgnoreCase(getName()))
-                        Log.e(TAG, "run: WARNING: " + getName());
-                    BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListener != null)
-                                if (!mListener.onProgressUpdated(syncProgress)) interrupt();
-                        }
-                    });
-                    Thread.sleep(DELAY_MILLIS);
-                }
-            } catch (InterruptedException e) {
-                Log.e(TAG, "run: " + getName(), e);
-                final double syncProgress = mCurrentWallet.getPeerManager().getSyncProgress(BRSharedPrefs.getStartHeight(mApp, mCurrentWallet.getIso(mApp)));
-                BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
+            Log.d(TAG, "SyncProgressTask: started: " + Thread.currentThread());
+
+            while (running)
+            {
+                final double syncProgress = mCurrentWallet.getPeerManager().getSyncProgress(BRSharedPrefs.getStartHeight(mApp.getApplicationContext(), mCurrentWallet.getIso(mApp)));
+
+                mApp.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (mListener != null)
-                            if (!mListener.onProgressUpdated(syncProgress)) interrupt();
+                        BRExecutor.getInstance().forMainThreadTasks().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!mListener.onProgressUpdated(syncProgress)) stopSyncing();
+                            }
+                        });
                     }
                 });
-            }
 
+                try {
+                    Thread.sleep(DELAY_MILLIS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -28,7 +28,7 @@
             android:layout_marginTop="16dp"
             android:textColor="@color/almost_black"
             android:textSize="@dimen/sub_header"
-            app:customTFont="CircularPro-Bold.otf"
+            app:customTFont="SF-UI-Display-Bold.otf"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -42,7 +42,7 @@
             android:lineSpacingMultiplier="1.3"
             android:textColor="@color/almost_black"
             android:textSize="@dimen/paragraph"
-            app:customTFont="CircularPro-Book.otf"
+            app:customTFont="SF-UI-Display-Regular.otf"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/info_title"

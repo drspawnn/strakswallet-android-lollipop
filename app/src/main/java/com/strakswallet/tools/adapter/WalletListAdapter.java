@@ -139,7 +139,7 @@ public class WalletListAdapter extends RecyclerView.Adapter<WalletListAdapter.Wa
                     Log.e(TAG, "startObserving: connecting: " + mCurrentWalletSyncing.walletManager.getIso(mContext));
                     mCurrentWalletSyncing.walletManager.connectWallet(mContext);
                     mSyncManager = SyncManager.getInstance();
-                    mSyncManager.startSyncing(mContext, mCurrentWalletSyncing.walletManager, new SyncManager.OnProgressUpdate() {
+                    mSyncManager.startSyncing((AppCompatActivity) mContext, mCurrentWalletSyncing.walletManager, new SyncManager.OnProgressUpdate() {
                         @Override
                         public boolean onProgressUpdated(double progress) {
                             return updateUi(mCurrentWalletSyncing, progress);
@@ -236,7 +236,7 @@ public class WalletListAdapter extends RecyclerView.Adapter<WalletListAdapter.Wa
             mWalletBalanceCurrency = view.findViewById(R.id.wallet_balance_currency);
             mParent = view.findViewById(R.id.wallet_card);
             mSyncingLabel = view.findViewById(R.id.syncing_label);
-            mSyncingProgressBar = view.findViewById(R.id.sync_progress);
+            mSyncingProgressBar = view.findViewById(R.id.sync_progress_list_item);
         }
     }
 

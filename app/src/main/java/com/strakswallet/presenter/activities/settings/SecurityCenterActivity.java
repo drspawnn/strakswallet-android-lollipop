@@ -101,7 +101,7 @@ public class SecurityCenterActivity extends BRActivity {
         } else {
             super.onBackPressed();
         }
-        overridePendingTransition(R.anim.fade_up, R.anim.exit_to_bottom);
+//        overridePendingTransition(R.anim.fade_up, R.anim.exit_to_bottom);
     }
 
     public RelativeLayout getMainLayout() {
